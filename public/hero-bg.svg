@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900">
+  <!--
+    STUB hero background.
+    Replace this file (or point Hero.jsx at a .jpg) with a photograph — a training
+    camp, a contest hall, or the team at the IMO. Anything dark and wide works;
+    the component lays a blue gradient over the top.
+
+    CROP-SAFE AREA: x 260–1340.
+    Hero.jsx paints this with `bg-cover bg-center`, so the visible slice is always
+    centred on x=800 and narrows as the hero gets taller relative to its width:
+
+        visible x range = 800 ± 450 · (hero width / hero height)
+
+    At 4:3 that is 200–1400; on a phone it collapses to roughly 625–975. Anything
+    outside 260–1340 will be cut off on ordinary screens, so keep deliberate
+    linework inside it. The grid and gradient are full-bleed by design — they tile
+    and stretch, so they survive any crop.
+  -->
+  <defs>
+    <linearGradient id="field" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a5379"/>
+      <stop offset="55%" stop-color="#062f45"/>
+      <stop offset="100%" stop-color="#04202f"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.63" cy="0.4" r="0.55">
+      <stop offset="0%" stop-color="#1c9fdb" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#1c9fdb" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+      <path d="M50 0H0V50" fill="none" stroke="#ffffff" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#field)"/>
+  <rect width="1600" height="900" fill="url(#grid)"/>
+  <rect width="1600" height="900" fill="url(#glow)"/>
+
+  <!--
+    Golden-ratio subdivision with its Fibonacci spiral, echoing the crest.
+    640 × 396 (ratio ≈ φ), placed at x 700–1340 — inside the safe area above.
+    Squares: 396, 244, 152, 92.
+  -->
+  <g transform="translate(700 170)" fill="none" stroke="#ffffff" stroke-opacity="0.18" stroke-width="1.5">
+    <rect x="0" y="0" width="640" height="396"/>
+    <path d="M396 0V396M396 244H640M488 244V396M396 304H488"/>
+    <path d="M0 396A396 396 0 0 1 396 0"/>
+    <path d="M396 0A244 244 0 0 1 640 244"/>
+    <path d="M640 244A152 152 0 0 1 488 396"/>
+    <path d="M488 396A92 92 0 0 1 396 304"/>
+  </g>
+
+  <!-- Crest-palette accents, kept well inside the safe area. -->
+  <g>
+    <circle cx="700" cy="566" r="4" fill="#f2e50f" opacity="0.75"/>
+    <circle cx="1340" cy="170" r="4" fill="#79bf43" opacity="0.75"/>
+    <circle cx="1096" cy="414" r="4" fill="#e6197f" opacity="0.6"/>
+  </g>
+
+  <!-- Faint ambient rings, low and central so a crop never severs them awkwardly. -->
+  <g fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1.5">
+    <circle cx="800" cy="770" r="150"/>
+    <circle cx="800" cy="770" r="96"/>
+  </g>
+</svg>

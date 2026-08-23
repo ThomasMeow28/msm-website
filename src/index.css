@@ -1,0 +1,110 @@
+@import 'tailwindcss';
+
+/*
+  Design tokens — colours sampled from the MSM crest.
+  Blue is the primary; green/yellow are supporting; magenta and red are
+  reserved for small accents only (rules, dots, single words).
+*/
+@theme {
+  --color-msm-blue: #1c9fdb;
+  --color-msm-blue-600: #1180b5;
+  --color-msm-blue-800: #0a5379;
+  --color-msm-blue-950: #062f45;
+  --color-msm-green: #79bf43;
+  --color-msm-green-700: #4f8a26;
+  --color-msm-yellow: #f2e50f;
+  --color-msm-magenta: #e6197f;
+  --color-msm-red: #d92b18;
+  --color-msm-ink: #0b1116;
+  --color-msm-slate: #4a5763;
+  --color-msm-line: #dfe5ea;
+  --color-msm-mist: #f4f7f9;
+
+  /*
+    Anton, Oswald and Inter carry no Myanmar glyphs, so a Burmese font is
+    appended to every stack. The browser falls through per-character: Latin
+    renders in the Latin face, Burmese in Noto Sans Myanmar. That means mixed
+    "MOMC ကော်မတီ" strings work with no extra markup.
+  */
+  --font-burmese: 'Noto Sans Myanmar', 'Padauk', 'Myanmar Text', 'Myanmar MN';
+  --font-display: 'Anton', 'Oswald', 'Arial Narrow', var(--font-burmese), sans-serif;
+  --font-cond: 'Oswald', 'Arial Narrow', var(--font-burmese), sans-serif;
+  --font-sans:
+    'Inter', 'Work Sans', var(--font-burmese), system-ui, -apple-system, sans-serif;
+
+  /*
+    Headline letter-spacing — the two knobs for the whole site.
+    Anton is a tight uppercase face, so small headlines need more air than
+    large ones. Raise these to open the headlines up; 0 is Anton's own metrics.
+  */
+  --tracking-display: 0.02em;
+  --tracking-display-sm: 0.08em;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-white font-sans text-msm-ink antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  ::selection {
+    @apply bg-msm-yellow text-msm-ink;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-msm-blue;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  /*
+    Burmese is a stacked script: letter-spacing pushes apart marks that belong
+    to the same syllable cluster, and the tight display leading clips the
+    ascenders and descenders those marks sit on. Relax both when the page is
+    Burmese. LanguageProvider keeps <html lang> in sync.
+  */
+  html[lang='my'] .display,
+  html[lang='my'] .display-sm,
+  html[lang='my'] .eyebrow {
+    letter-spacing: 0;
+  }
+
+  html[lang='my'] .display {
+    line-height: 1.2;
+  }
+
+  html[lang='my'] .display-sm {
+    line-height: 1.45;
+  }
+}
+
+@layer components {
+  /* Anton is a single-weight face and sits tight — pull leading in, not out. */
+  .display {
+    @apply font-display uppercase leading-[0.92];
+    letter-spacing: var(--tracking-display);
+  }
+
+  /* Subheads, the nav wordmark, timeline years — anything Anton below ~text-3xl. */
+  .display-sm {
+    @apply font-display uppercase leading-tight;
+    letter-spacing: var(--tracking-display-sm);
+  }
+
+  .eyebrow {
+    @apply font-cond text-xs font-semibold uppercase tracking-[0.22em];
+  }
+}
