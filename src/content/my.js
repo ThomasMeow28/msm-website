@@ -31,7 +31,6 @@ const nav = [
   { label: 'MOTC', to: '/motc' },
   { label: 'IMO Team', to: '/#achievements' },
   { label: 'FAQ', to: '/faq' },
-  { label: 'Contact', to: '/contact' },
 ]
 
 /** Chrome and controls — not page copy, but still needs translating. */
@@ -41,8 +40,8 @@ const ui = {
   closeMenu: 'Close menu',
   primaryNav: 'Primary',
   primaryNavMobile: 'Primary (mobile)',
-  navCta: 'Get involved',
-  navCtaTo: '/motc',
+  navCta: 'Contact us',
+  navCtaTo: '/contact',
   moreDetails: 'More details',
   breadcrumb: 'Breadcrumb',
   breadcrumbHome: 'Home',
@@ -188,8 +187,8 @@ const committees = [
               href: 'https://drive.google.com/drive/folders/1lZw2M8lrQlK--bOHYh73fIs8UP2Z2Lol',
             },
             items: [
-              { name: 'MOMC Junior I booklet — Shine', href: 'https://drive.google.com/file/d/1hy-PV0pMyB7ceV24WVukva_oVN56R211/view', meta: 'PDF · 0.4 MB' },
-              { name: 'MOMC Junior II booklet — Shine', href: 'https://drive.google.com/file/d/1P0cps9YRuk3JVxoqF-MQOXGaWsahZkMS/view', meta: 'PDF · 1.6 MB' },
+              { name: 'MOMC Junior I booklet — Shine Maw Arnt', href: 'https://drive.google.com/file/d/1hy-PV0pMyB7ceV24WVukva_oVN56R211/view', meta: 'PDF · 0.4 MB' },
+              { name: 'MOMC Junior II booklet — Shine Maw Arnt', href: 'https://drive.google.com/file/d/1P0cps9YRuk3JVxoqF-MQOXGaWsahZkMS/view', meta: 'PDF · 1.6 MB' },
               { name: 'MMO questions and solutions, 2016–2020 — Kyaw Shin Thant', href: 'https://drive.google.com/file/d/10lxibT9xn3kXsE38YVC_HDpkXUlTm-rn/view', meta: 'PDF · 1.2 MB' },
             ],
           },
@@ -445,27 +444,26 @@ const achievements = {
     'Explore Myanmar’s participation in the International Mathematical Olympiad over the years. Select a year below to discover the team that represented Myanmar.',
 }
 
-const getInvolved = {
-  eyebrow: 'Get involved',
-  headline: 'JOIN MYANMAR’S JOURNEY TO THE IMO',
-  cards: [
+const publications = {
+  title: 'Publications',
+  items: [
     {
-      title: 'Students',
-      body: 'Start your journey towards representing Myanmar at the IMO.',
-      cta: { label: 'Train with MOTC', to: '/motc' },
-      accent: 'green',
+      title: 'The Mathematics Community in Myanmar, a Developing Country Plagued by Unrest',
+      byline:
+        'Michael Dorff and Graeme Fairweather, “The Mathematics Community in Myanmar, a Developing Country Plagued by Unrest”, MAA FOCUS, June/July 2021, pp. 16–18.',
+      meta: 'MAA FOCUS · June/July 2021 · pp. 16–18',
+      href:
+        'https://digitaleditions.walsworth.com/article/The+Mathematics+Community+In+Myanmar%2C+A+Developing+Country+Plagued+By+Unrest/4056336/711461/article.html',
+      image: '/news/maa-focus-2021-thumb.jpg',
+      alt: 'First page of the MAA FOCUS article, headlined “The Mathematics Community in Myanmar, a Developing Country Plagued by Unrest”, above a photograph of a Buddhist temple on Taungthaman Lake at sunset.',
     },
     {
-      title: 'Schools',
-      body: 'Help identify and support the next generation of Myanmar’s mathematical talent.',
-      cta: { label: 'Partner with MOMC', to: '/momc' },
-      accent: 'blue',
-    },
-    {
-      title: 'General',
-      body: 'Get in touch with us for enquiries, ideas, or ways to contribute.',
-      cta: { label: 'Contact MSM', to: '/contact' },
-      accent: 'magenta',
+      title: '8th International Conference on Science and Mathematics Education in Developing Countries',
+      byline: 'University of Yangon',
+      meta: 'Conference poster · 4–6 December 2015',
+      href: '/news/icsmedc-2015-poster.jpg',
+      image: '/news/icsmedc-2015-poster.jpg',
+      alt: 'Conference poster for the 8th International Conference on Science and Mathematics Education in Developing Countries, held at the University of Yangon from 4 to 6 December 2015, listing the plenary and keynote speakers.',
     },
   ],
 }
@@ -560,8 +558,8 @@ export default {
   committees,
   committeePage,
   achievements,
-  getInvolved,
   faq,
+  publications,
   contact,
   footer,
   notFound,

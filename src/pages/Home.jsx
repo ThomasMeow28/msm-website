@@ -90,12 +90,12 @@ function OlympiadTimeline() {
       <div
         role="tablist"
         aria-label={achievements.timelineHeading}
-        className="mt-8 grid grid-cols-[repeat(auto-fill,minmax(4.5rem,1fr))] bg-white"
+        className="mt-8 flex flex-wrap justify-center bg-white"
       >
         {timeline.map((item) => {
           const selected = item.year === entry.year
           const base =
-            'display-sm py-3 text-lg shadow-[inset_0_0_0_1px_var(--color-msm-line)] transition-colors'
+            'display-sm w-20 py-3 text-lg shadow-[inset_0_0_0_1px_var(--color-msm-line)] transition-colors'
 
           return (
             <button
@@ -223,41 +223,54 @@ function Achievements() {
   )
 }
 
-function GetInvolved() {
-  const { getInvolved } = useContent()
+/** Two archive items — an article and a conference poster — before the footer. */
+function Publications() {
+  const { publications, ui } = useContent()
 
   return (
     <section
-      id="get-involved"
-      className="scroll-mt-28 bg-msm-blue-950 py-20 text-white sm:py-28"
+      id="publications"
+      className="scroll-mt-28 border-t border-msm-line bg-msm-mist py-20 sm:py-28"
     >
       <Container>
-        {/* Unconstrained so the headline stays on one line at desktop widths. */}
-        <SectionHeader
-          eyebrow={getInvolved.eyebrow}
-          headline={getInvolved.headline}
-          accent="yellow"
-          onDark
-        />
+        <h2 className="display text-[clamp(2rem,5vw,3.5rem)] text-msm-ink">
+          {publications.title}
+        </h2>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-3 lg:gap-8">
-          {getInvolved.cards.map((card) => {
-            const a = accentOf(card.accent)
-            return (
-              <div
-                key={card.title}
-                className="flex flex-col border border-white/15 bg-white/[0.04] p-7"
+        <ul className="mt-10 grid gap-6 md:grid-cols-2 lg:gap-8">
+          {publications.items.map((item) => (
+            <li key={item.href} className="flex">
+              <a
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex w-full flex-col border border-msm-line bg-white transition-colors hover:border-msm-ink"
               >
-                <span className={`block h-1.5 w-12 ${a.bar}`} aria-hidden="true" />
-                <h3 className="mt-5 display-sm text-xl text-white">{card.title}</h3>
-                <p className="mt-3 flex-1 leading-relaxed text-white/70">{card.body}</p>
-                <Button to={card.cta.to} variant="outlineOnDark" className="mt-7 w-full">
-                  {card.cta.label}
-                </Button>
-              </div>
-            )
-          })}
-        </div>
+                {/* Mixed shapes — a portrait page and a landscape poster — so
+                    contain them rather than cropping either one. */}
+                <img
+                  src={item.image}
+                  alt={item.alt}
+                  loading="lazy"
+                  className="aspect-[4/3] w-full border-b border-msm-line bg-msm-mist object-contain"
+                />
+
+                <div className="flex flex-1 flex-col p-7">
+                  <p className="eyebrow text-msm-slate">{item.meta}</p>
+                  <h3 className="mt-4 display-sm text-xl text-msm-ink underline-offset-4 group-hover:underline">
+                    {item.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-msm-slate">{item.byline}</p>
+                  <span className="mt-6 inline-flex items-center gap-2 font-cond text-sm font-semibold uppercase tracking-[0.14em] text-msm-blue-600">
+                    {ui.moreDetails}
+                    <span aria-hidden="true">↗</span>
+                    <span className="sr-only">{ui.opensInNewTab}</span>
+                  </span>
+                </div>
+              </a>
+            </li>
+          ))}
+        </ul>
       </Container>
     </section>
   )
@@ -270,7 +283,7 @@ export default function Home() {
       <About />
       <Committees />
       <Achievements />
-      <GetInvolved />
+      <Publications />
     </>
   )
 }

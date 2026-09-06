@@ -60,18 +60,23 @@ between them.
 - [ ] Past-paper display names are inferred from the Drive filenames
       (`G9 15 to 19.pdf` → "Grade 9, 2015-2019"); confirm the readings.
 
-## 7. FAQ page
+## 7. Publications
+
+- [ ] The MAA FOCUS article PDF is re-hosted in `public/news/`. MAA holds
+      the copyright — confirm permission, or link to maa.org/focus instead.
+
+## 8. FAQ page
 
 - [ ] `faq.items` — six placeholder questions; every answer is a STUB and
       the questions themselves should be confirmed or replaced
 
-## 8. Contact page
+## 9. Contact page
 
 - [ ] Two general email addresses
 - [x] Physical address (four lines) — done; office-hours note removed
 - [ ] Facebook URL (currently `#`)
 
-## 9. Images
+## 10. Images
 
 - [ ] `public/hero-bg.svg` — geometric stand-in. Replace with a photograph
       (training camp, contest hall, team at the IMO). Anything dark and wide
