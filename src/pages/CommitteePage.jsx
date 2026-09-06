@@ -3,13 +3,12 @@ import Container from '../components/Container'
 import PageHeader from '../components/PageHeader'
 import SectionHeader from '../components/SectionHeader'
 import ImagePlaceholder from '../components/ImagePlaceholder'
-import Button from '../components/Button'
 import { accentOf } from '../accents'
 import { fill, useContent } from '../i18n'
 
 /** Drives both /momc and /motc from the same content shape. */
 export default function CommitteePage({ slug }) {
-  const { committees, committeePage, ui, EOI_URL } = useContent()
+  const { committees, committeePage, ui } = useContent()
   const committee = committees.find((c) => c.slug === slug)
 
   if (!committee) return <Navigate to="/" replace />
@@ -31,17 +30,6 @@ export default function CommitteePage({ slug }) {
         subtitle={committee.fullName}
         accent={committee.accent}
       />
-
-      {/* Optional document link — only committees with `page.plan` show it. */}
-      {page.plan && (
-        <section className="border-b border-msm-line bg-msm-mist py-5">
-          <Container className="text-center">
-            <Button href={page.plan.href} variant="outline">
-              {page.plan.label}
-            </Button>
-          </Container>
-        </section>
-      )}
 
       <section className="border-b border-msm-line bg-white py-16 sm:py-24">
         <Container>
@@ -132,6 +120,43 @@ export default function CommitteePage({ slug }) {
                             <span className="sr-only">{ui.opensInNewTab}</span>
                           </span>
                         </a>
+
+                        {/* The toggle is a sibling of the title link, never inside it —
+                            an <a> nested in a <summary> would fire both at once. */}
+                        {item.videos && (
+                          <details className="group/d pb-4">
+                            <summary className="flex cursor-pointer list-none items-center gap-2 font-cond text-xs font-semibold uppercase tracking-[0.14em] text-msm-blue-600 [&::-webkit-details-marker]:hidden">
+                              <span
+                                aria-hidden="true"
+                                className="inline-block transition-transform group-open/d:rotate-90"
+                              >
+                                ▸
+                              </span>
+                              {item.videos.length === 1
+                                ? committeePage.showVideosOne
+                                : fill(committeePage.showVideos, { count: item.videos.length })}
+                            </summary>
+
+                            <ol className="mt-3 space-y-px border-l-2 border-msm-line pl-4">
+                              {item.videos.map((video) => (
+                                <li key={video.href}>
+                                  <a
+                                    href={video.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5 py-1.5 text-sm text-msm-slate underline-offset-4 transition-colors hover:text-msm-blue-600 hover:underline"
+                                  >
+                                    <span>{video.name}</span>
+                                    <span className="shrink-0 font-cond text-xs tracking-[0.1em] text-msm-slate/70">
+                                      {video.meta}
+                                      <span className="sr-only">{ui.opensInNewTab}</span>
+                                    </span>
+                                  </a>
+                                </li>
+                              ))}
+                            </ol>
+                          </details>
+                        )}
                       </li>
                     ))}
                   </ul>
@@ -235,36 +260,6 @@ export default function CommitteePage({ slug }) {
           </Container>
         </section>
       )}
-
-      {/* Expression of interest */}
-      <section className="bg-msm-mist py-16 sm:py-20">
-        <Container>
-          <div className="grid items-center gap-10 border border-msm-line bg-white p-8 sm:p-12 lg:grid-cols-12 lg:gap-16">
-            <div className="lg:col-span-7">
-              <div className="flex items-center gap-3">
-                <span className={`h-3 w-3 ${a.bar}`} aria-hidden="true" />
-                <p className="eyebrow text-msm-slate">{committeePage.eoiEyebrow}</p>
-              </div>
-              <h2 className="display mt-5 text-[clamp(1.75rem,4vw,2.75rem)] text-msm-ink">
-                {fill(page.eoi.heading ?? committeePage.eoiHeading, vars)}
-              </h2>
-              {page.eoi.note && (
-                <p className="mt-5 leading-relaxed text-msm-slate">{page.eoi.note}</p>
-              )}
-            </div>
-
-            <div className="lg:col-span-5 lg:justify-self-end">
-              <Button
-                href={EOI_URL[committee.slug]}
-                variant="primary"
-                className="w-full lg:w-auto"
-              >
-                {page.eoi.label}
-              </Button>
-            </div>
-          </div>
-        </Container>
-      </section>
 
       {/* Cross-link to the other committee */}
       <section className="border-t border-msm-line bg-white py-14">

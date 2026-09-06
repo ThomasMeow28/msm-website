@@ -73,7 +73,9 @@ function OlympiadTimeline() {
   const vars = { year: entry.year, host: entry.host }
   const title = fill(achievements.photoTitle, vars)
   const alt = fill(achievements.photoAlt, vars)
-  const people = `${achievements.peoplePrefix} ${entry.people}`
+  const people = entry.leftToRight
+    ? `${achievements.peoplePrefix} ${entry.people}`
+    : entry.people
 
   return (
     <div className="mt-16 border-t border-msm-line pt-10">
@@ -92,6 +94,9 @@ function OlympiadTimeline() {
       >
         {timeline.map((item) => {
           const selected = item.year === entry.year
+          const base =
+            'display-sm py-3 text-lg shadow-[inset_0_0_0_1px_var(--color-msm-line)] transition-colors'
+
           return (
             <button
               key={item.year}
@@ -102,7 +107,7 @@ function OlympiadTimeline() {
               aria-controls="timeline-panel"
               tabIndex={selected ? 0 : -1}
               onClick={() => setYear(item.year)}
-              className={`display-sm py-3 text-lg shadow-[inset_0_0_0_1px_var(--color-msm-line)] transition-colors ${
+              className={`${base} ${
                 selected
                   ? 'bg-msm-blue text-white'
                   : 'bg-white text-msm-blue-600 hover:bg-msm-mist'
@@ -130,10 +135,8 @@ function OlympiadTimeline() {
             <img
               src={entry.photo}
               alt={alt}
-              width="1800"
-              height="1200"
               loading="lazy"
-              className="aspect-[3/2] w-full object-cover"
+              className="aspect-[3/2] w-full bg-msm-mist object-contain"
             />
           </button>
         ) : (
