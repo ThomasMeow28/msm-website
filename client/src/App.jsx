@@ -6,6 +6,7 @@ import Home from './pages/Home'
 import CommitteePage from './pages/CommitteePage'
 import Contact from './pages/Contact'
 import Faq from './pages/Faq'
+import Signup from './pages/Signup'
 import NotFound from './pages/NotFound'
 import LanguageProvider from './i18n/LanguageProvider'
 import { useContent } from './i18n'
@@ -39,6 +40,7 @@ export default function App() {
             <Route path="/motc" element={<CommitteePage slug="motc" />} />
             <Route path="/faq" element={<Faq />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/signup" element={<Signup />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

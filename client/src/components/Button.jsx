@@ -17,12 +17,13 @@ const variants = {
 
 /**
  * Renders a react-router <Link> for internal paths — including in-page hashes
- * like "/#about", which ScrollManager scrolls to after the route resolves — and
- * a plain <a> for everything else (dummy links, mailto:, external URLs).
+ * like "/#about", which ScrollManager scrolls to after the route resolves — a
+ * plain <a> for other links, or a native <button> when `as="button"` is used.
  */
 export default function Button({
   to,
   href,
+  as = 'link',
   variant = 'primary',
   className = '',
   children,
@@ -30,6 +31,14 @@ export default function Button({
 }) {
   const classes = `${base} ${variants[variant] ?? variants.primary} ${className}`
   const target = to ?? href
+
+  if (as === 'button') {
+    return (
+      <button type="button" className={classes} {...rest}>
+        {children}
+      </button>
+    )
+  }
 
   if (to && to.startsWith('/')) {
     return (
