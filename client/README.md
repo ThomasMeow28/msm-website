@@ -34,9 +34,10 @@ npm run lint
 `/momc` and `/motc` are the same component (`src/pages/CommitteePage.jsx`)
 rendered from two entries in the content file.
 
-The signup form (`src/pages/Signup.jsx`) currently performs browser-side
-required-field validation only. Submission is intentionally not persisted
-until the account backend is implemented.
+The signup form (`src/pages/Signup.jsx`) performs browser-side validation and
+submits to the server's `POST /api/signup` route. Run the server from
+`../server` during local development; Vite proxies API requests to
+`http://localhost:4567`.
 
 ## Editing content
 

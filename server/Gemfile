@@ -1,0 +1,7 @@
+source "https://rubygems.org"
+
+gem "sinatra", "~> 2.2"
+gem "rackup", "~> 1.0"
+gem "bcrypt", "~> 3.1"
+gem "pg", "~> 1.5"
+gem "dotenv", "~> 2.8"

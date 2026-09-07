@@ -31,6 +31,7 @@ const nav = [
   { label: 'MOTC', to: '/motc' },
   { label: 'IMO Team', to: '/#achievements' },
   { label: 'FAQ', to: '/faq' },
+  { label: 'Log in', to: '/login' },
 ]
 
 /** Chrome and controls — not page copy, but still needs translating. */
@@ -42,6 +43,8 @@ const ui = {
   primaryNavMobile: 'Primary (mobile)',
   navCta: 'Sign up',
   navCtaTo: '/signup',
+  logout: 'Log out',
+  loggingOut: 'Logging out...',
   moreDetails: 'More details',
   breadcrumb: 'Breadcrumb',
   breadcrumbHome: 'Home',
@@ -508,6 +511,28 @@ const signup = {
     dateOfBirth: 'Date of birth',
   },
   submit: 'Sign up',
+  submitting: 'Creating account...',
+  success: 'Your account has been created.',
+  errors: {
+    generic: 'We could not create your account. Please try again.',
+  },
+}
+
+const login = {
+  eyebrow: 'Log in',
+  headline: 'Welcome back',
+  subtitle: 'Log in to your Mathematical Society of Myanmar account',
+  labels: {
+    email: 'Email',
+    password: 'Password',
+  },
+  submit: 'Log in',
+  submitting: 'Logging in...',
+  success: 'You are logged in.',
+  errors: {
+    invalidCredentials: 'Email or password is incorrect.',
+    generic: 'We could not log you in. Please try again.',
+  },
 }
 
 /** STUB — the questions are plausible placeholders; every answer needs writing. */
@@ -574,6 +599,7 @@ export default {
   publications,
   contact,
   signup,
+  login,
   footer,
   notFound,
 }
