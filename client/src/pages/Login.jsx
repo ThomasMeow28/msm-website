@@ -1,11 +1,15 @@
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Button from '../components/Button'
 import Container from '../components/Container'
 import PageHeader from '../components/PageHeader'
 import { useContent } from '../i18n'
-import { useState } from 'react'
+import { useAuth } from '../auth'
 
-export default function Signup() {
-  const { signup } = useContent()
+export default function Login() {
+  const { login } = useContent()
+  const { login: authenticate } = useAuth()
+  const navigate = useNavigate()
   const [state, setState] = useState('idle')
   const [message, setMessage] = useState('')
 
@@ -18,46 +22,38 @@ export default function Signup() {
     const payload = {
       email: formData.get('email'),
       password: formData.get('password'),
-      dateOfBirth: formData.get('dateOfBirth'),
     }
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/signup`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      })
-      const result = await response.json()
+      const { response, result } = await authenticate(payload)
 
       if (!response.ok) {
         setState('error')
-        setMessage(result.message || signup.errors.generic)
+        setMessage(result.error === 'invalid_credentials' ? login.errors.invalidCredentials : result.message || login.errors.generic)
         return
       }
 
-      event.currentTarget.reset()
-      setState('success')
-      setMessage(signup.success)
+      navigate('/', { replace: true })
     } catch {
       setState('error')
-      setMessage(signup.errors.generic)
+      setMessage(login.errors.generic)
     }
   }
 
   return (
     <>
-      <PageHeader eyebrow={signup.eyebrow} title={signup.headline} subtitle={signup.subtitle} accent="green" />
+      <PageHeader eyebrow={login.eyebrow} title={login.headline} subtitle={login.subtitle} accent="blue" />
 
       <section className="bg-white py-16 sm:py-24">
         <Container>
           <form onSubmit={handleSubmit} className="max-w-xl border-t border-msm-line pt-8" aria-busy={state === 'loading'}>
             <div className="space-y-7">
               <div>
-                <label htmlFor="signup-email" className="eyebrow text-msm-slate">
-                  {signup.labels.email}
+                <label htmlFor="login-email" className="eyebrow text-msm-slate">
+                  {login.labels.email}
                 </label>
                 <input
-                  id="signup-email"
+                  id="login-email"
                   name="email"
                   type="email"
                   autoComplete="email"
@@ -67,42 +63,22 @@ export default function Signup() {
               </div>
 
               <div>
-                <label htmlFor="signup-password" className="eyebrow text-msm-slate">
-                  {signup.labels.password}
+                <label htmlFor="login-password" className="eyebrow text-msm-slate">
+                  {login.labels.password}
                 </label>
                 <input
-                  id="signup-password"
+                  id="login-password"
                   name="password"
                   type="password"
-                  autoComplete="new-password"
-                  minLength={8}
-                  required
-                  className="mt-3 block w-full border-2 border-msm-line bg-white px-4 py-3 text-msm-ink transition-colors focus:border-msm-blue outline-none"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="signup-date-of-birth" className="eyebrow text-msm-slate">
-                  {signup.labels.dateOfBirth}
-                </label>
-                <input
-                  id="signup-date-of-birth"
-                  name="dateOfBirth"
-                  type="date"
-                  autoComplete="bday"
+                  autoComplete="current-password"
                   required
                   className="mt-3 block w-full border-2 border-msm-line bg-white px-4 py-3 text-msm-ink transition-colors focus:border-msm-blue outline-none"
                 />
               </div>
             </div>
 
-            <Button
-              as="button"
-              type="submit"
-              disabled={state === 'loading'}
-              className="mt-9"
-            >
-              {state === 'loading' ? signup.submitting : signup.submit}
+            <Button as="button" type="submit" disabled={state === 'loading'} className="mt-9">
+              {state === 'loading' ? login.submitting : login.submit}
             </Button>
             {message && (
               <p role={state === 'error' ? 'alert' : 'status'} className={`mt-5 text-sm ${state === 'error' ? 'text-msm-red' : 'text-msm-green-700'}`}>

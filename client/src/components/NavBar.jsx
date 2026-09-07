@@ -4,6 +4,7 @@ import Container from './Container'
 import Button from './Button'
 import LanguageSwitcher from './LanguageSwitcher'
 import { useContent } from '../i18n'
+import { useAuth } from '../auth'
 
 function BrandMark({ className = '' }) {
   return (
@@ -19,6 +20,8 @@ function BrandMark({ className = '' }) {
 export default function NavBar() {
   const [open, setOpen] = useState(false)
   const { nav, org, ui } = useContent()
+  const { user, status, logout } = useAuth()
+  const [logoutState, setLogoutState] = useState('idle')
   // `key` changes on every navigation, so tapping the anchor you are already on
   // still closes the drawer.
   const { pathname, hash, key } = useLocation()
@@ -38,6 +41,17 @@ export default function NavBar() {
     `font-cond text-sm font-semibold uppercase tracking-[0.14em] transition-colors ${
       isActive ? 'text-msm-blue-600' : 'text-msm-ink hover:text-msm-blue-600'
     }`
+
+  async function handleLogout() {
+    setLogoutState('loading')
+    try {
+      await logout()
+    } finally {
+      setLogoutState('idle')
+    }
+  }
+
+  const accountLinks = nav.filter((item) => !user || item.to !== '/login')
 
   // The header is opaque white rather than bg-white/95: the logo JPEG carries a
   // baked-in white background, and any translucency shows its edges as a box.
@@ -59,7 +73,7 @@ export default function NavBar() {
           </Link>
 
           <nav className="hidden items-center gap-7 lg:flex" aria-label={ui.primaryNav}>
-            {nav.map((item) =>
+            {accountLinks.map((item) =>
               item.to.startsWith('/#') ? (
                 <Link key={item.to} to={item.to} className={linkClass({ isActive: false })}>
                   {item.label}
@@ -71,9 +85,20 @@ export default function NavBar() {
               ),
             )}
             <LanguageSwitcher />
-            <Button to={ui.navCtaTo} variant="primary" className="py-2.5!">
-              {ui.navCta}
-            </Button>
+            {status === 'ready' && user ? (
+              <div className="flex items-center gap-3">
+                <span className="max-w-40 truncate text-xs font-medium text-msm-slate" title={user.email}>
+                  {user.email}
+                </span>
+                <Button as="button" variant="outline" className="py-2.5!" onClick={handleLogout} disabled={logoutState === 'loading'}>
+                  {logoutState === 'loading' ? ui.loggingOut : ui.logout}
+                </Button>
+              </div>
+            ) : (
+              <Button to={ui.navCtaTo} variant="primary" className="py-2.5!">
+                {ui.navCta}
+              </Button>
+            )}
           </nav>
 
           <div className="flex items-center gap-3 lg:hidden">
@@ -120,9 +145,20 @@ export default function NavBar() {
                   {item.label}
                 </Link>
               ))}
-              <Button to={ui.navCtaTo} variant="primary" className="mt-5 w-full">
-                {ui.navCta}
-              </Button>
+              {status === 'ready' && user ? (
+                <div className="mt-5 border-t border-msm-line pt-5">
+                  <p className="truncate text-sm font-medium text-msm-slate" title={user.email}>
+                    {user.email}
+                  </p>
+                  <Button as="button" variant="outline" className="mt-4 w-full" onClick={handleLogout} disabled={logoutState === 'loading'}>
+                    {logoutState === 'loading' ? ui.loggingOut : ui.logout}
+                  </Button>
+                </div>
+              ) : (
+                <Button to={ui.navCtaTo} variant="primary" className="mt-5 w-full">
+                  {ui.navCta}
+                </Button>
+              )}
             </nav>
           </Container>
         </div>
