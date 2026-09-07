@@ -40,8 +40,8 @@ const ui = {
   closeMenu: 'Close menu',
   primaryNav: 'Primary',
   primaryNavMobile: 'Primary (mobile)',
-  navCta: 'Contact us',
-  navCtaTo: '/contact',
+  navCta: 'Sign up',
+  navCtaTo: '/signup',
   moreDetails: 'More details',
   breadcrumb: 'Breadcrumb',
   breadcrumbHome: 'Home',
@@ -498,6 +498,18 @@ const contact = {
   ],
 }
 
+const signup = {
+  eyebrow: 'Sign up',
+  headline: 'Create an account',
+  subtitle: 'Join the Mathematical Society of Myanmar',
+  labels: {
+    email: 'Email',
+    password: 'Password',
+    dateOfBirth: 'Date of birth',
+  },
+  submit: 'Sign up',
+}
+
 /** STUB — the questions are plausible placeholders; every answer needs writing. */
 const faq = {
   eyebrow: 'FAQ',
@@ -561,6 +573,7 @@ export default {
   faq,
   publications,
   contact,
+  signup,
   footer,
   notFound,
 }

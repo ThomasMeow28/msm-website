@@ -28,10 +28,15 @@ npm run lint
 | `/momc`    | Competition & selection committee — description, photo, EOI link  |
 | `/motc`    | Training committee — description, photo, EOI link                 |
 | `/contact` | Static contact details and address. No form, by design.           |
+| `/signup`  | Account signup form for email, password and date of birth        |
 | `*`        | 404                                                               |
 
 `/momc` and `/motc` are the same component (`src/pages/CommitteePage.jsx`)
 rendered from two entries in the content file.
+
+The signup form (`src/pages/Signup.jsx`) currently performs browser-side
+required-field validation only. Submission is intentionally not persisted
+until the account backend is implemented.
 
 ## Editing content
 
