@@ -1,21 +1,11 @@
 /**
- * Burmese (my) content bundle.
+ * English content bundle. `my.js` is the Burmese counterpart and must keep the
+ * same shape — same keys, same array lengths, same `{placeholders}`.
  *
- * ⚠️ NOT YET TRANSLATED — this is a verbatim copy of en.js. Every string below
- * is still English and is waiting to be rewritten. Mixing English terms into
- * Burmese text is fine and expected (MOMC, IMO, proper nouns, and anything else
- * you would rather leave in English).
+ * Anything marked `STUB` is placeholder content that must be replaced before
+ * this site goes public. See STUBS.md at the project root.
  *
- * Rules when editing:
- *   - Keep the same keys. A missing key renders as blank, not as English.
- *   - Keep arrays the same length (nav, heroStats, timeline, spotlights, …) —
- *     components index into them positionally.
- *   - Keep {braced} placeholders intact; `fill()` in src/i18n.jsx substitutes
- *     them. You may reorder them within a sentence.
- *   - `to`, `href`, `slug` and `accent` are wiring, not copy. Leave
- *     them identical to en.js or the links will break.
- *
- * Anything marked `STUB` is placeholder content — see STUBS.md.
+ * Strings may contain {braced} placeholders, filled in by `fill()` from src/i18n.jsx.
  */
 
 const org = {
@@ -31,7 +21,6 @@ const nav = [
   { label: 'MOTC', to: '/motc' },
   { label: 'IMO Team', to: '/#achievements' },
   { label: 'FAQ', to: '/faq' },
-  { label: 'Log in', to: '/login' },
 ]
 
 /** Chrome and controls — not page copy, but still needs translating. */
@@ -41,10 +30,8 @@ const ui = {
   closeMenu: 'Close menu',
   primaryNav: 'Primary',
   primaryNavMobile: 'Primary (mobile)',
-  navCta: 'Sign up',
-  navCtaTo: '/signup',
-  logout: 'Log out',
-  loggingOut: 'Logging out...',
+  navCta: 'Contact us',
+  navCtaTo: '/contact',
   moreDetails: 'More details',
   breadcrumb: 'Breadcrumb',
   breadcrumbHome: 'Home',
@@ -61,7 +48,7 @@ const ui = {
 const hero = {
   eyebrow: 'Non-profit · Established 2014',
   headline: ['Mathematical', 'Society of', 'Myanmar'],
-  lede: 'MSM (မြန်မာနိုင်ငံသင်္ချာအသင်း) သည် သင်္ချာဘာသာရပ်ကို ချစ်မြတ်နိုးသူများဖြင့်ဖွဲ့စည်းထားသည့် (​ငွေ​ကြေး အကျိုးအမြတ်ကို မရည်ရွယ်သည့်) ဘာသာရပ်ဆိုင်ရာ အသင်းတစ်ခုဖြစ်သည်။ MSM သည် မြန်မာနိုင်ငံတွင် နိုင်ငံအဆင့်နှင့် နိုင်ငံတကာ အိုလံပစ်ပြိုင်ပွဲများကို ဦးစီးကျင်းပ၍ ထိုပြိုင်ပွဲများမှ အထူးချွန်ဆုံး ပြိုင်ပွဲဝင်ကျောင်းသားများကို စိစစ်ရွေးချယ်ကာ နိုင်ငံတကာသင်္ချာအိုလံပစ်ပြိုင်ပွဲ (International Mathematics Olympiad - IMO) ကို စေလွှတ်သည့် မြန်မာ့ပထမဦးဆုံးသော သင်္ချာအဖွဲ့အစည်းဖြစ်သည်။',
+  lede: 'MSM (Mathematical Society of Myanmar) is Myanmar’s first Math Olympiad, non-govermental organization. Our aim is to select Myanmar’s best students in mathematics to represent Myanmar at the prestigious IMO (International Mathematics Olympiad).',
   primaryCta: { label: 'Explore our training', to: '/motc' },
   secondaryCta: { label: 'What is MSM?', to: '/#about' },
 }
@@ -106,7 +93,7 @@ const committees = [
       'MOMC designs and oversees the selection pathway for choosing students to represent Myanmar at the International Mathematical Olympiad (IMO). It also curates and selects appropriate problems for each stage of the selection process.',
     page: {
       body: [
-        'MOMC သည် မြန်မာနိုင်ငံ၏ နိုင်ငံအဆင့် သင်္ချာအိုလံပစ်ပြိုင်ပွဲဖြစ်သည်။ MOMC (Myanmar Open Mathematics Competition) မှာ IMO တွင် မြန်မာကိုယ်စားပြု သွားရောက်ယှဉ်ပြိုင်ခွင့်ရရှိရေးအတွက် တစ်ခုတည်းသော အခွင့်အလမ်းဖြစ်ပြီး MOMC ကို အသက်အပိုင်းအခြားအရ Junior(I&II) and Seniors (I&II) ဟူ၍ အဆင့် (၄) မျိုးခွဲခြားထားရှိသည်။ အဆင့်တစ်ခုလျှင် Round (၂) ခုစီရှိရာ Round (၁) တွင် မည်သည့်ကျောင်းသားမဆို စာရင်းသွင်းဖြေဆိုနိုင်ပြီး  Round  (၂)သည် Round  (၁) မှ ရွေးချယ်ခံရသည့် ကျောင်းသားများသာ ဖြေဆိုခွင့်ရှိပါသည်။ ထိုပြိုင်ပွဲများကို (၁၀)လပိုင်းနှင့် နောက်နှစ် (၁)လပိုင်းဝန်းကျင်တွင် ကျင်းပလေ့ရှိသည်။',
+        'MOMC is the astonishing proof-type national Maths Olympiad contest in Myanmar. MOMC (Myanmar Open Mathematics Competition) is the only gateway for the IMO. Divided by the age bracket, MOMC currently host 4 levels - Junior(I&II) and Seniors (I&II). Each level has 2 rounds: Round 1 is open to any student fallen in the relevant age bracket and Round 2 is explicitly for those who are chosen from the Round 1, and they are usually held in Late October and early January respectively.',
       ],
       /**
        * STUB — names and logos both. Put the logo files in public/partners/
@@ -156,7 +143,7 @@ const committees = [
       'MOTC delivers the training program. Led by former IMO contestants alongside university-level mathematics students and researchers, it prepares selected students through intensive training and guides them toward international competitions.',
     page: {
       body: [
-        'MOTC မှာ မြန်မာနိုင်ငံအိုလံပစ်င်္သချာလေ့ကျင့်ရေးကော်မတီ ကို ဆိုလိုသည်။ MOTC သည် ကျောင်းသားများ၊ အထူးသဖြင့် အငယ်တန်းအဆင့်ပြိုင်ပွဲဝင်များ၊ ဓမ္မဒိဌာန်မေးခွန်းပုံစံမှ သင်္ချာနည်းကျ သက်သေပြချက်ရေးသားပြရသည့် မေးခွန်းပုံစံကို စတင်ထိတွေ့သောအခါ ကြုံတွေ့ရသည့် အခက်အခဲများ လျော့ပါးလာစေရန် ရည်ရွယ်ကာ MOMC Round (၁) နှင့် Round (၂) မတိုင်ခင်တွင် လေ့ကျင့်ရေးသင်ခန်းစာများ ပို့ချပေးသည်။',
+        'MOTC is the acronym of Mathematical Olympiad Training Committee. As the name suggests, we provide exclusive Math Olympiad training to young fellows before each MOMC Round 1 and Round 2. Our objective is to tighten the gap between MCQ Olympiads and Proof-based Olympiads especially for the Juniors.',
       ],
       /**
        * STUB — every `href` is a placeholder. Point `folder.href` at the shared
@@ -501,58 +488,6 @@ const contact = {
   ],
 }
 
-const signup = {
-  eyebrow: 'Sign up',
-  headline: 'Create an account',
-  subtitle: 'Join the Mathematical Society of Myanmar',
-  labels: {
-    name: 'Name',
-    email: 'Email',
-    password: 'Password',
-    dateOfBirth: 'Date of birth',
-    verificationCode: 'Verification code',
-  },
-  submit: 'Sign up',
-  submitting: 'Creating account...',
-  verificationSent: 'We sent a verification code to your email.',
-  verificationPrompt: 'Enter the six-digit code sent to',
-  verify: 'Verify email',
-  verifying: 'Verifying...',
-  success: 'Your email is verified. You can now log in.',
-  errors: {
-    generic: 'We could not create your account. Please try again.',
-  },
-}
-
-const login = {
-  eyebrow: 'Log in',
-  headline: 'Welcome back',
-  subtitle: 'Log in to your Mathematical Society of Myanmar account',
-  methods: {
-    password: 'Use password',
-    code: 'Use email code',
-  },
-  labels: {
-    email: 'Email',
-    password: 'Password',
-    verificationCode: 'Email code',
-  },
-  submit: 'Log in',
-  submitting: 'Logging in...',
-  requestCode: 'Email me a code',
-  requestingCode: 'Sending code...',
-  codeSent: 'We sent a six-digit code to your email.',
-  codePrompt: 'Enter the code sent to',
-  verifyCode: 'Log in with code',
-  verifyingCode: 'Checking code...',
-  success: 'You are logged in.',
-  errors: {
-    invalidCredentials: 'Email or password is incorrect.',
-    invalidCode: 'The email code is invalid or expired.',
-    generic: 'We could not log you in. Please try again.',
-  },
-}
-
 /** STUB — the questions are plausible placeholders; every answer needs writing. */
 const faq = {
   eyebrow: 'FAQ',
@@ -616,8 +551,6 @@ export default {
   faq,
   publications,
   contact,
-  signup,
-  login,
   footer,
   notFound,
 }

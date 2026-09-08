@@ -1,6 +1,0 @@
-.bundle/
-vendor/bundle/
-*.log
-.env
-.env.*
-!.env.example

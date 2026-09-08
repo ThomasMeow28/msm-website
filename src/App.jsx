@@ -6,12 +6,9 @@ import Home from './pages/Home'
 import CommitteePage from './pages/CommitteePage'
 import Contact from './pages/Contact'
 import Faq from './pages/Faq'
-import Signup from './pages/Signup'
-import Login from './pages/Login'
 import NotFound from './pages/NotFound'
 import LanguageProvider from './i18n/LanguageProvider'
 import { useContent } from './i18n'
-import AuthProvider from './auth/AuthProvider'
 
 /** Separate component so it can read the language context App itself provides. */
 function SkipLink() {
@@ -31,25 +28,21 @@ export default function App() {
   return (
     <LanguageProvider>
       <BrowserRouter>
-        <AuthProvider>
-          <ScrollManager />
-          <SkipLink />
-          <NavBar />
-          <main id="main">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              {/* Both committee routes render one component, driven by the content bundle */}
-              <Route path="/momc" element={<CommitteePage slug="momc" />} />
-              <Route path="/motc" element={<CommitteePage slug="motc" />} />
-              <Route path="/faq" element={<Faq />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </main>
-          <Footer />
-        </AuthProvider>
+        <ScrollManager />
+        <SkipLink />
+        <NavBar />
+        <main id="main">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            {/* Both committee routes render one component, driven by the content bundle */}
+            <Route path="/momc" element={<CommitteePage slug="momc" />} />
+            <Route path="/motc" element={<CommitteePage slug="motc" />} />
+            <Route path="/faq" element={<Faq />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </main>
+        <Footer />
       </BrowserRouter>
     </LanguageProvider>
   )
