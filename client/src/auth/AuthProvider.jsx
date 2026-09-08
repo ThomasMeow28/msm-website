@@ -34,6 +34,18 @@ export default function AuthProvider({ children }) {
     return { response, result }
   }, [])
 
+  const loginWithCode = useCallback(async (credentials) => {
+    const response = await fetch(`${apiUrl}/api/login-with-code`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(credentials),
+    })
+    const result = await response.json()
+    if (response.ok) setUser(result.user)
+    return { response, result }
+  }, [])
+
   const logout = useCallback(async () => {
     const response = await fetch(`${apiUrl}/api/logout`, {
       method: 'POST',
@@ -45,8 +57,8 @@ export default function AuthProvider({ children }) {
   }, [])
 
   const value = useMemo(
-    () => ({ user, status, login, logout, refresh }),
-    [user, status, login, logout, refresh],
+    () => ({ user, status, login, loginWithCode, logout, refresh }),
+    [user, status, login, loginWithCode, logout, refresh],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

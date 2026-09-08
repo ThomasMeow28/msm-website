@@ -2,19 +2,23 @@ import Button from '../components/Button'
 import Container from '../components/Container'
 import PageHeader from '../components/PageHeader'
 import { useContent } from '../i18n'
+import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 
 export default function Signup() {
   const { signup } = useContent()
+  const navigate = useNavigate()
   const [state, setState] = useState('idle')
   const [message, setMessage] = useState('')
+  const [pendingEmail, setPendingEmail] = useState('')
 
   async function handleSubmit(event) {
     event.preventDefault()
+    const form = event.currentTarget
     setState('loading')
     setMessage('')
 
-    const formData = new FormData(event.currentTarget)
+    const formData = new FormData(form)
     const payload = {
       email: formData.get('email'),
       password: formData.get('password'),
@@ -35,11 +39,39 @@ export default function Signup() {
         return
       }
 
-      event.currentTarget.reset()
-      setState('success')
-      setMessage(signup.success)
+      setPendingEmail(payload.email)
+      form.reset()
+      setState('verify')
+      setMessage(signup.verificationSent)
     } catch {
       setState('error')
+      setMessage(signup.errors.generic)
+    }
+  }
+
+  async function handleVerification(event) {
+    event.preventDefault()
+    setState('loading')
+    setMessage('')
+    const formData = new FormData(event.currentTarget)
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/verify-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: pendingEmail, code: formData.get('code') }),
+      })
+      const result = await response.json()
+
+      if (!response.ok) {
+        setState('verify')
+        setMessage(result.message || signup.errors.generic)
+        return
+      }
+
+      navigate('/', { replace: true })
+    } catch {
+      setState('verify')
       setMessage(signup.errors.generic)
     }
   }
@@ -50,6 +82,25 @@ export default function Signup() {
 
       <section className="bg-white py-16 sm:py-24">
         <Container>
+          {state === 'verify' || state === 'success' ? (
+            <form onSubmit={handleVerification} className="max-w-xl border-t border-msm-line pt-8" aria-busy={state === 'loading'}>
+              <p className="text-msm-ink">{signup.verificationPrompt} <strong>{pendingEmail}</strong></p>
+              <label htmlFor="verification-code" className="eyebrow mt-7 block text-msm-slate">
+                {signup.labels.verificationCode}
+              </label>
+              <input
+                id="verification-code"
+                name="code"
+                inputMode="numeric"
+                pattern="[0-9]{6}"
+                maxLength={6}
+                required
+                className="mt-3 block w-full border-2 border-msm-line bg-white px-4 py-3 text-msm-ink transition-colors focus:border-msm-blue outline-none"
+              />
+              {state !== 'success' && <Button as="button" type="submit" disabled={state === 'loading'} className="mt-9">{state === 'loading' ? signup.verifying : signup.verify}</Button>}
+              {message && <p role={state === 'verify' ? 'alert' : 'status'} className={`mt-5 text-sm ${state === 'verify' && message !== signup.verificationSent ? 'text-msm-red' : 'text-msm-green-700'}`}>{message}</p>}
+            </form>
+          ) : (
           <form onSubmit={handleSubmit} className="max-w-xl border-t border-msm-line pt-8" aria-busy={state === 'loading'}>
             <div className="space-y-7">
               <div>
@@ -110,6 +161,7 @@ export default function Signup() {
               </p>
             )}
           </form>
+          )}
         </Container>
       </section>
     </>

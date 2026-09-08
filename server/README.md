@@ -35,3 +35,7 @@ uses an HTTP-only session cookie and exposes `/api/session` and `/api/logout`.
 
 Passwords are stored as bcrypt digests, and email uniqueness is enforced by a
 case-insensitive PostgreSQL index.
+
+Signup sends a six-digit email verification code before the account can be
+used. Configure `SMTP_ADDRESS`, `SMTP_FROM`, and optionally `SMTP_PORT`,
+`SMTP_DOMAIN`, `SMTP_USERNAME`, `SMTP_PASSWORD`, and `SMTP_STARTTLS` in `.env`.
