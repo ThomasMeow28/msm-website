@@ -4,9 +4,11 @@ import PageHeader from '../components/PageHeader'
 import { useContent } from '../i18n'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import { useAuth } from '../auth'
 
 export default function Signup() {
   const { signup } = useContent()
+  const { refresh } = useAuth()
   const navigate = useNavigate()
   const [state, setState] = useState('idle')
   const [message, setMessage] = useState('')
@@ -20,6 +22,7 @@ export default function Signup() {
 
     const formData = new FormData(form)
     const payload = {
+      name: formData.get('name'),
       email: formData.get('email'),
       password: formData.get('password'),
       dateOfBirth: formData.get('dateOfBirth'),
@@ -58,6 +61,7 @@ export default function Signup() {
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/verify-email`, {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: pendingEmail, code: formData.get('code') }),
       })
@@ -69,6 +73,7 @@ export default function Signup() {
         return
       }
 
+      await refresh()
       navigate('/', { replace: true })
     } catch {
       setState('verify')
@@ -103,6 +108,20 @@ export default function Signup() {
           ) : (
           <form onSubmit={handleSubmit} className="max-w-xl border-t border-msm-line pt-8" aria-busy={state === 'loading'}>
             <div className="space-y-7">
+              <div>
+                <label htmlFor="signup-name" className="eyebrow text-msm-slate">
+                  {signup.labels.name}
+                </label>
+                <input
+                  id="signup-name"
+                  name="name"
+                  type="text"
+                  autoComplete="name"
+                  required
+                  className="mt-3 block w-full border-2 border-msm-line bg-white px-4 py-3 text-msm-ink transition-colors focus:border-msm-blue outline-none"
+                />
+              </div>
+
               <div>
                 <label htmlFor="signup-email" className="eyebrow text-msm-slate">
                   {signup.labels.email}

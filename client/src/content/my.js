@@ -506,6 +506,7 @@ const signup = {
   headline: 'Create an account',
   subtitle: 'Join the Mathematical Society of Myanmar',
   labels: {
+    name: 'Name',
     email: 'Email',
     password: 'Password',
     dateOfBirth: 'Date of birth',
