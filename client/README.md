@@ -28,10 +28,16 @@ npm run lint
 | `/momc`    | Competition & selection committee — description, photo, EOI link  |
 | `/motc`    | Training committee — description, photo, EOI link                 |
 | `/contact` | Static contact details and address. No form, by design.           |
+| `/signup`  | Account signup form for name, email, password and date of birth |
 | `*`        | 404                                                               |
 
 `/momc` and `/motc` are the same component (`src/pages/CommitteePage.jsx`)
 rendered from two entries in the content file.
+
+The signup form (`src/pages/Signup.jsx`) performs browser-side validation and
+submits to the server's `POST /api/signup` route. Run the server from
+`../server` during local development; Vite proxies API requests to
+`http://localhost:4567`.
 
 ## Editing content
 
