@@ -5,6 +5,11 @@ GEM
     dotenv (2.8.1)
     mustermann (2.0.2)
       ruby2_keywords (~> 0.0.1)
+    net-protocol (0.3.0)
+      timeout
+    net-smtp (0.5.1)
+      net-protocol
+    ostruct (0.6.3)
     pg (1.5.9)
     rack (2.2.24)
     rack-protection (2.2.4)
@@ -19,6 +24,7 @@ GEM
       rack-protection (= 2.2.4)
       tilt (~> 2.0)
     tilt (2.9.0)
+    timeout (0.6.1)
     webrick (1.9.2)
 
 PLATFORMS
@@ -27,9 +33,11 @@ PLATFORMS
 DEPENDENCIES
   bcrypt (~> 3.1)
   dotenv (~> 2.8)
+  net-smtp
+  ostruct
   pg (~> 1.5)
   rackup (~> 1.0)
   sinatra (~> 2.2)
 
 BUNDLED WITH
-   1.17.2
+   2.5.16
