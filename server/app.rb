@@ -88,6 +88,7 @@ class MsmApi < Sinatra::Base
 
   post "/api/signup" do
     request_body = JSON.parse(request.body.read)
+    name = request_body.fetch("name", "").strip
     email = request_body.fetch("email", "").strip.downcase
     password = request_body.fetch("password", "")
     date_of_birth = request_body.fetch("dateOfBirth", "")
@@ -99,6 +100,7 @@ class MsmApi < Sinatra::Base
     end
 
     errors = {}
+    errors["name"] = "Enter your name" if name.empty?
     errors["email"] = "Enter a valid email address" unless email.match?(/\A[^\s@]+@[^\s@]+\.[^\s@]+\z/)
     errors["password"] = "Password must be at least 8 characters" if password.length < 8
     errors["dateOfBirth"] = "Enter a valid date of birth" if parsed_date.nil? || parsed_date > Date.today
@@ -109,8 +111,8 @@ class MsmApi < Sinatra::Base
     connection = database
     connection.transaction do |transaction|
       transaction.exec_params(
-        "INSERT INTO users (email, password_digest, date_of_birth, verification_code_digest, verification_expires_at, verified_at) VALUES ($1, $2, $3, $4, NOW() + INTERVAL '15 minutes', NULL)",
-        [email, BCrypt::Password.create(password), parsed_date, verification_code_digest(code)],
+        "INSERT INTO users (name, email, password_digest, date_of_birth, verification_code_digest, verification_expires_at, verified_at) VALUES ($1, $2, $3, $4, $5, NOW() + INTERVAL '15 minutes', NULL)",
+        [name, email, BCrypt::Password.create(password), parsed_date, verification_code_digest(code)],
       )
       send_verification_email(email, code)
     end
@@ -118,7 +120,7 @@ class MsmApi < Sinatra::Base
 
     json_response({ email: email, message: "Check your email for a verification code" }, 201)
   rescue JSON::ParserError
-    json_response({ error: "invalid_json", message: "Request body must include email, password, and dateOfBirth" }, 400)
+    json_response({ error: "invalid_json", message: "Request body must include name, email, password, and dateOfBirth" }, 400)
   rescue PG::UniqueViolation
     connection&.close
     json_response({ error: "email_taken", message: "An account with that email already exists" }, 409)
@@ -127,7 +129,7 @@ class MsmApi < Sinatra::Base
     if error.key.to_s.start_with?("SMTP_")
       json_response({ error: "email_unavailable", message: "Email delivery is not configured" }, 503)
     else
-      json_response({ error: "invalid_json", message: "Request body must include email, password, and dateOfBirth" }, 400)
+      json_response({ error: "invalid_json", message: "Request body must include name, email, password, and dateOfBirth" }, 400)
     end
   rescue Net::SMTPError, SocketError => error
     connection&.close
@@ -144,14 +146,15 @@ class MsmApi < Sinatra::Base
     code = request_body.fetch("code", "").strip
     connection = database
     result = connection.exec_params(
-      "UPDATE users SET verified_at = NOW(), verification_code_digest = NULL, verification_expires_at = NULL WHERE LOWER(email) = $1 AND verified_at IS NULL AND verification_code_digest = $2 AND verification_expires_at > NOW() RETURNING email",
+      "UPDATE users SET verified_at = NOW(), verification_code_digest = NULL, verification_expires_at = NULL WHERE LOWER(email) = $1 AND verified_at IS NULL AND verification_code_digest = $2 AND verification_expires_at > NOW() RETURNING id, name, email",
       [email, verification_code_digest(code)],
     )
     connection.close
 
     return json_response({ error: "invalid_verification_code", message: "The verification code is invalid or expired" }, 422) if result.ntuples.zero?
 
-    json_response({ email: result[0]["email"], message: "Email verified. You can now log in." })
+    session[:user_id] = result[0]["id"].to_i
+    json_response({ user: { id: result[0]["id"].to_i, name: result[0]["name"], email: result[0]["email"] }, message: "Email verified. You are now logged in." })
   rescue JSON::ParserError, KeyError
     json_response({ error: "invalid_json", message: "Request body must include email and code" }, 400)
   rescue PG::Error
@@ -166,7 +169,7 @@ class MsmApi < Sinatra::Base
 
     connection = database
     result = connection.exec_params(
-      "SELECT id, email, password_digest, verified_at FROM users WHERE LOWER(email) = $1 LIMIT 1",
+      "SELECT id, name, email, password_digest, verified_at FROM users WHERE LOWER(email) = $1 LIMIT 1",
       [email],
     )
     connection.close
@@ -177,7 +180,7 @@ class MsmApi < Sinatra::Base
     return json_response({ error: "invalid_credentials", message: "Email or password is incorrect" }, 401) unless authenticated
 
     session[:user_id] = user["id"].to_i
-    json_response({ user: { id: user["id"].to_i, email: user["email"] } })
+    json_response({ user: { id: user["id"].to_i, name: user["name"], email: user["email"] } })
   rescue JSON::ParserError, KeyError
     json_response({ error: "invalid_json", message: "Request body must include email and password" }, 400)
   rescue PG::Error
@@ -218,7 +221,7 @@ class MsmApi < Sinatra::Base
     code = request_body.fetch("code", "").strip
     connection = database
     result = connection.exec_params(
-      "UPDATE users SET verification_code_digest = NULL, verification_expires_at = NULL WHERE LOWER(email) = $1 AND verified_at IS NOT NULL AND verification_code_digest = $2 AND verification_expires_at > NOW() RETURNING id, email",
+      "UPDATE users SET verification_code_digest = NULL, verification_expires_at = NULL WHERE LOWER(email) = $1 AND verified_at IS NOT NULL AND verification_code_digest = $2 AND verification_expires_at > NOW() RETURNING id, name, email",
       [email, verification_code_digest(code)],
     )
     connection.close
@@ -226,7 +229,7 @@ class MsmApi < Sinatra::Base
     return json_response({ error: "invalid_login_code", message: "The login code is invalid or expired" }, 401) if result.ntuples.zero?
 
     session[:user_id] = result[0]["id"].to_i
-    json_response({ user: { id: result[0]["id"].to_i, email: result[0]["email"] } })
+    json_response({ user: { id: result[0]["id"].to_i, name: result[0]["name"], email: result[0]["email"] } })
   rescue JSON::ParserError, KeyError
     json_response({ error: "invalid_json", message: "Request body must include email and code" }, 400)
   rescue PG::Error
@@ -239,7 +242,7 @@ class MsmApi < Sinatra::Base
     return json_response({ authenticated: false }) unless user_id
 
     connection = database
-    result = connection.exec_params("SELECT id, email FROM users WHERE id = $1", [user_id])
+    result = connection.exec_params("SELECT id, name, email FROM users WHERE id = $1", [user_id])
     connection.close
     user = result.ntuples.zero? ? nil : result[0]
 
@@ -248,7 +251,7 @@ class MsmApi < Sinatra::Base
       return json_response({ authenticated: false })
     end
 
-    json_response({ authenticated: true, user: { id: user["id"].to_i, email: user["email"] } })
+    json_response({ authenticated: true, user: { id: user["id"].to_i, name: user["name"], email: user["email"] } })
   rescue PG::Error
     connection&.close
     json_response({ error: "database_unavailable", message: "Unable to check the session right now" }, 503)

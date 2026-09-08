@@ -87,8 +87,8 @@ export default function NavBar() {
             <LanguageSwitcher />
             {status === 'ready' && user ? (
               <div className="flex items-center gap-3">
-                <span className="max-w-40 truncate text-xs font-medium text-msm-slate" title={user.email}>
-                  {user.email}
+                <span className="max-w-40 truncate text-xs font-medium text-msm-slate" title={user.name || user.email}>
+                  {user.name || user.email}
                 </span>
                 <Button as="button" variant="outline" className="py-2.5!" onClick={handleLogout} disabled={logoutState === 'loading'}>
                   {logoutState === 'loading' ? ui.loggingOut : ui.logout}
@@ -147,8 +147,8 @@ export default function NavBar() {
               ))}
               {status === 'ready' && user ? (
                 <div className="mt-5 border-t border-msm-line pt-5">
-                  <p className="truncate text-sm font-medium text-msm-slate" title={user.email}>
-                    {user.email}
+                  <p className="truncate text-sm font-medium text-msm-slate" title={user.name || user.email}>
+                    {user.name || user.email}
                   </p>
                   <Button as="button" variant="outline" className="mt-4 w-full" onClick={handleLogout} disabled={logoutState === 'loading'}>
                     {logoutState === 'loading' ? ui.loggingOut : ui.logout}
