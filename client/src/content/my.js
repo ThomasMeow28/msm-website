@@ -168,31 +168,25 @@ const committees = [
         groups: [
           {
             title: 'Past papers',
-            folder: {
-              label: 'Open the folder',
-              href: 'https://drive.google.com/drive/folders/1YsfAKYeV6FUXYenbg3z9FiH0I4DVIIOI',
-            },
+            folder: null,
             items: [
-              { name: 'Grade 9, 2015–2019', href: 'https://drive.google.com/file/d/1F_c1f2paVaNRZCiCEWNKibk2CdRboM5_/view', meta: 'PDF · 2.4 MB' },
-              { name: 'Grade 10, 2015–2019', href: 'https://drive.google.com/file/d/1LiMU5ybP_5IeCTVBzX73xIwhiguPCjmS/view', meta: 'PDF · 2.3 MB' },
-              { name: 'Grade 11, 2015–2019', href: 'https://drive.google.com/file/d/1_OFltQsF0ebfVm8n5UmNF_AynOXN5N_b/view', meta: 'PDF · 2.5 MB' },
-              { name: 'MOMC Junior 1, 2019', href: 'https://drive.google.com/file/d/1Nlf2-27Bp-2iOZ1Un0a4a-UlehaNt_y-/view', meta: 'PDF · 0.8 MB' },
-              { name: 'MOMC Junior 2, 2023–2024', href: 'https://drive.google.com/file/d/1XWZQ3Om7xa-os0jBfkwvTIl2pdKhKKvv/view', meta: 'PDF · 2.3 MB' },
-              { name: 'MOMC Senior 1, 2024', href: 'https://drive.google.com/file/d/1_og7GUMj74rmaWJ8y75BoF7fg1mfnK1F/view', meta: 'PDF · 0.8 MB' },
-              { name: 'MOMC Senior 2, 2023–2024', href: 'https://drive.google.com/file/d/1GTFXlX8ir2XZak0jxxYyrB34GPL76A38/view', meta: 'PDF · 1.4 MB' },
-              { name: 'Team selection tests, 2017–2020 and 2023–2025', href: 'https://drive.google.com/file/d/1mRhZIj1YBJYZ0ucMQwtVZ-RuiKM6fAFl/view', meta: 'PDF · 2.0 MB' },
+              { name: 'Grade 9, 2015–2019', href: '/api/resources/past-papers-grade-9', meta: 'PDF · 2.4 MB' },
+              { name: 'Grade 10, 2015–2019', href: '/api/resources/past-papers-grade-10', meta: 'PDF · 2.3 MB' },
+              { name: 'Grade 11, 2015–2019', href: '/api/resources/past-papers-grade-11', meta: 'PDF · 2.5 MB' },
+              { name: 'MOMC Junior 1, 2019', href: '/api/resources/past-papers-junior-1', meta: 'PDF · 0.8 MB' },
+              { name: 'MOMC Junior 2, 2023–2024', href: '/api/resources/past-papers-junior-2', meta: 'PDF · 2.3 MB' },
+              { name: 'MOMC Senior 1, 2024', href: '/api/resources/past-papers-senior-1', meta: 'PDF · 0.8 MB' },
+              { name: 'MOMC Senior 2, 2023–2024', href: '/api/resources/past-papers-senior-2', meta: 'PDF · 1.4 MB' },
+              { name: 'Team selection tests, 2017–2020 and 2023–2025', href: '/api/resources/past-papers-team-selection', meta: 'PDF · 2.0 MB' },
             ],
           },
           {
             title: 'Books & notes',
-            folder: {
-              label: 'Open the folder',
-              href: 'https://drive.google.com/drive/folders/1lZw2M8lrQlK--bOHYh73fIs8UP2Z2Lol',
-            },
+            folder: null,
             items: [
-              { name: 'MOMC Junior I booklet — Shine Maw Arnt', href: 'https://drive.google.com/file/d/1hy-PV0pMyB7ceV24WVukva_oVN56R211/view', meta: 'PDF · 0.4 MB' },
-              { name: 'MOMC Junior II booklet — Shine Maw Arnt', href: 'https://drive.google.com/file/d/1P0cps9YRuk3JVxoqF-MQOXGaWsahZkMS/view', meta: 'PDF · 1.6 MB' },
-              { name: 'MMO questions and solutions, 2016–2020 — Kyaw Shin Thant', href: 'https://drive.google.com/file/d/10lxibT9xn3kXsE38YVC_HDpkXUlTm-rn/view', meta: 'PDF · 1.2 MB' },
+              { name: 'MOMC Junior I booklet — Shine Maw Arnt', href: '/api/resources/books-junior-1', meta: 'PDF · 0.4 MB' },
+              { name: 'MOMC Junior II booklet — Shine Maw Arnt', href: '/api/resources/books-junior-2', meta: 'PDF · 1.6 MB' },
+              { name: 'MMO questions and solutions, 2016–2020 — Kyaw Shin Thant', href: '/api/resources/books-mmo', meta: 'PDF · 1.2 MB' },
             ],
           },
           {
