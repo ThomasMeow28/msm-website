@@ -1,6 +1,7 @@
 import { Navigate, Link } from 'react-router-dom'
 import Container from '../components/Container'
 import PageHeader from '../components/PageHeader'
+import StudyGuide from '../components/StudyGuide'
 import SectionHeader from '../components/SectionHeader'
 import ImagePlaceholder from '../components/ImagePlaceholder'
 import { accentOf } from '../accents'
@@ -77,15 +78,47 @@ export default function CommitteePage({ slug }) {
         </Container>
       </section>
 
+      {/* Olympiad Toolkit — only committees with `page.studyGuide` show it. */}
+      {page.studyGuide && (
+        <section className="border-b border-msm-line bg-white py-16 sm:py-24">
+          <Container>
+            <details className="group">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 [&::-webkit-details-marker]:hidden">
+                <h2 className="display text-[clamp(2rem,5vw,3.5rem)] text-msm-ink">
+                  {page.studyGuide.title}
+                </h2>
+                <span
+                  aria-hidden="true"
+                  className="shrink-0 text-4xl leading-none text-msm-blue-600 transition-transform duration-150 group-open:rotate-45"
+                >
+                  +
+                </span>
+              </summary>
+              <div className="mt-10">
+                <StudyGuide guide={page.studyGuide} />
+              </div>
+            </details>
+          </Container>
+        </section>
+      )}
+
       {/* Resources — only committees with `page.resources` show it. */}
       {page.resources && (
         <section className="border-b border-msm-line bg-white py-16 sm:py-24">
           <Container>
-            <h2 className="display text-[clamp(2rem,5vw,3.5rem)] text-msm-ink">
-              {page.resources.title}
-            </h2>
-
-            <div className="mt-10 space-y-14">
+            <details className="group">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 [&::-webkit-details-marker]:hidden">
+                <h2 className="display text-[clamp(2rem,5vw,3.5rem)] text-msm-ink">
+                  {page.resources.title}
+                </h2>
+                <span
+                  aria-hidden="true"
+                  className="shrink-0 text-4xl leading-none text-msm-blue-600 transition-transform duration-150 group-open:rotate-45"
+                >
+                  +
+                </span>
+              </summary>
+              <div className="mt-10 space-y-14">
               {page.resources.groups.map((group) => (
                 <div key={group.title}>
                   <div className="flex flex-wrap items-baseline justify-between gap-4">
@@ -162,7 +195,8 @@ export default function CommitteePage({ slug }) {
                   </ul>
                 </div>
               ))}
-            </div>
+              </div>
+            </details>
           </Container>
         </section>
       )}

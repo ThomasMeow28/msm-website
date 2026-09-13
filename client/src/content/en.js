@@ -148,6 +148,228 @@ const committees = [
       body: [
         'MOTC is the acronym of Mathematical Olympiad Training Committee. As the name suggests, we provide exclusive Math Olympiad training to young fellows before each MOMC Round 1 and Round 2. Our objective is to tighten the gap between MCQ Olympiads and Proof-based Olympiads especially for the Juniors.',
       ],
+      studyGuide: {
+        title: 'Olympiad Toolkit',
+        lede:
+          'Resources alone do not guarantee success, but using the right resource at the right time makes the Olympiad journey clearer and more efficient. These are the materials Olympiad students rely on worldwide, grouped by topic.',
+        topics: [
+          {
+            id: 'online',
+            label: 'Platforms',
+            items: [
+              {
+                n: 1,
+                title: 'Art of Problem Solving (AoPS)',
+                body: [
+                  'Art of Problem Solving (AoPS), one of the most helpful online platforms for Olympiad mathematics, was founded by Richard Rusczyk. AoPS shows that Olympiad mathematics is highly collaborative.',
+                ],
+                lists: [
+                  {
+                    heading: 'What AoPS provides',
+                    items: [
+                      'Problems from international contests',
+                      'Detailed solution discussions, videos and books',
+                      'A difficulty–ranked problem system',
+                      'Olympiad training courses',
+                    ],
+                  },
+                  {
+                    heading: 'Non-contest forums where students can',
+                    items: [
+                      'Search for specific topics (e.g. probability, number theory)',
+                      'Read multiple solution approaches',
+                      'Ask and answer freely',
+                      'Pick an online class that best fits interests beyond maths (e.g. physics, programming)',
+                    ],
+                  },
+                ],
+                note: null,
+                link: null,
+              },
+              {
+                n: 2,
+                title: 'Olympiad Training for Individual Study (OTIS)',
+                body: [
+                  'OTIS is a structured Olympiad training platform designed to build problem-solving skills step by step.',
+                ],
+                lists: [
+                  {
+                    heading: 'What OTIS provides',
+                    items: [
+                      'Free OTIS excerpts',
+                      'Full structured courses, best suited to students who prefer guided learning',
+                      'Financial aid for students in need',
+                      'Open to anyone, including international students, with no age restrictions',
+                    ],
+                  },
+                ],
+                note: null,
+                link: null,
+              },
+              {
+                n: 3,
+                title: 'Mathematical Olympiad Discord Server (MODS)',
+                body: [
+                  'A Discord community of over twenty thousand maths enthusiasts who live-solve problems and discuss the Olympiad together. It holds more than 2,000 Olympiad problems rated by students, so you can find problems at your own level and look for hints when you are stuck.',
+                ],
+                lists: [
+                ],
+                note: null,
+                link: { label: 'Join the Discord server', href: 'https://discord.gg/mods' },
+              },
+            ],
+          },
+          {
+            id: 'geometry',
+            label: 'Geo',
+            items: [
+              {
+                n: 4,
+                title: 'Euclidean Geometry in Mathematical Olympiads (EGMO)',
+                body: [
+                  'EGMO is written by Evan Chen, who completed his number theory PhD at MIT. He was an IMO gold medallist and a winner of the 2014 USA Mathematical Olympiad, and wrote this textbook while still in high school; it was published in 2016.',
+                ],
+                lists: [
+                  {
+                    heading: 'How EGMO is structured',
+                    items: [
+                      'Chapters 1–2: a strong foundation, sufficient for IMO P1/P4 geometry',
+                      'Chapters 3–4: more advanced Olympiad geometry',
+                    ],
+                  },
+                ],
+                note: 'EGMO includes a hint system, so you can think deeply and independently before reading a full solution.',
+                link: null,
+              },
+              {
+                n: 5,
+                title: 'A Beautiful Journey Through Olympiad Geometry',
+                body: [
+                  'Aimed at anyone preparing for the geometry part of mathematics competitions and Olympiads. It suits beginners and non-beginners alike, and assumes no previous knowledge of geometry.',
+                ],
+                lists: [
+                  {
+                    heading: 'How it is structured',
+                    items: [
+                      'Chapters 1–11: all the basic concepts and techniques',
+                      'Chapters 12–27: more advanced topics and lemmas such as the radical axis and homothety',
+                    ],
+                  },
+                ],
+                note: 'We would recommend EGMO as your main book and this one as support. If you find the EGMO problems challenging, digest this one first.',
+                link: null,
+              },
+            ],
+          },
+          {
+            id: 'number-theory',
+            label: 'NT',
+            items: [
+              {
+                n: 6,
+                title: 'Modern Olympiad Number Theory (MONT)',
+                body: [
+                  'MONT, written by Aditya Khurmi, is one of the best-known books in the Olympiad number theory community.',
+                ],
+                lists: [
+                  {
+                    heading: 'How MONT is structured',
+                    items: [
+                      'Chapters 1–4: an introduction to basic number theory such as modular arithmetic and divisibility',
+                      'Chapters 5–9: deep walkthroughs of more advanced topics such as orders and prime exponents',
+                    ],
+                  },
+                ],
+                note: 'It includes a hint system like EGMO, and its problems are drawn from international contests.',
+                link: null,
+              },
+              {
+                n: 7,
+                title: 'Problems of Number Theory in Mathematical Competition',
+                body: [
+                  'This book introduces basic concepts and methods in elementary number theory through competition problems. The problems assume little prior knowledge and come in many variations, which makes them flexible and diverse.',
+                ],
+                lists: [
+                  {
+                    heading: 'How it is structured',
+                    items: [
+                      'Chapters 1–4: basic number theory such as divisibility, equations and gcd',
+                      'Chapters 6–9: more advanced techniques such as modular arithmetic and orders',
+                    ],
+                  },
+                ],
+                note: null,
+                link: null,
+              },
+            ],
+          },
+          {
+            id: 'algebra',
+            label: 'Alge',
+            items: [
+              {
+                n: 8,
+                title: 'Functional Equations, by Pang-Cheng Wu',
+                body: [
+                  'This book on its own is enough to cover one of the main components of Olympiad algebra: functional equations.',
+                ],
+                lists: [
+                  {
+                    heading: 'How it is structured',
+                    items: [
+                      'Chapter 1: basic techniques – assertions, injectivity, surjectivity and Cauchy FE',
+                      'Chapter 2: deeper into Cauchy functions',
+                      'Chapter 3: manipulating the two sides of an equation',
+                      'Chapter 4: calculus and advanced FE',
+                      'Chapter 5: number theory FE',
+                      'Chapter 6: polynomial FE',
+                    ],
+                  },
+                ],
+                note: 'After Chapters 1 to 4, with the concepts well understood, you should be able to solve IMO P1-P6 functional equations.',
+                link: null,
+              },
+              {
+                n: 9,
+                title: 'Basics of Olympiad Inequalities, by Samin Riasat',
+                body: [
+                  'The most beginner-friendly way into inequalities, intended for Olympiad students preparing for a topic now in frequent use at every level of competition.',
+                ],
+                lists: [
+                  {
+                    heading: 'How it is structured',
+                    items: [
+                      'Chapter 1: basic inequalities such as AM–GM–HM',
+                      'Chapter 2: Cauchy and Holder',
+                      'Chapter 3: rearrangement and Chebyshev',
+                      'Chapter 4: advanced inequalities such as Jensen and Schur',
+                    ],
+                  },
+                ],
+                note: null,
+                link: null,
+              },
+            ],
+          },
+          {
+            id: 'combinatorics',
+            label: 'Combi',
+            items: [
+              {
+                n: 10,
+                title: 'Hein Thant Aung\'s combinatorics teaching',
+                body: [
+                  'Hein Thant Aung is one of the four founders of Euclidiad and an early Honourable Mention winner in Myanmar\'s IMO history. He has published all of his combinatorics lectures and exercises from IMO training on his own site, explained in Burmese - a lasting resource for the next generation of Myanmar olympiad students.',
+                ],
+                lists: [
+                ],
+                note: null,
+                link: { label: 'Open the lecture site', href: 'https://snark-graphique.github.io/teaching' },
+              },
+            ],
+          },
+        ],
+      },
       /**
        * STUB — every `href` is a placeholder. Point `folder.href` at the shared
        * Drive folder for each group and list a few highlights underneath; that
@@ -387,14 +609,14 @@ const achievements = {
       year: '2018',
       host: 'Cluj-Napoca, Romania',
       photo: '/teams/IMO2018.jpeg',
-      people: 'Sai Sinn Zom Leng, Myat Thu Khaing, Kyaw Htet Lin, Naing Zaw Lu, Htet Linn Wai, Wai Yan Moe Lwin',
+      people: 'Wai Yan Moe Lwin, Htet Linn Wai, Naing Zaw Lu, Kyaw Htet Lin, Myat Thu Khaing, Sai Sinn Zom Leng',
       leftToRight: true,
     },
     {
       year: '2019',
       host: 'Bath, United Kingdom',
       photo: '/teams/IMO2019.jpeg',
-      people: 'U Htin Aung, Daw Myint Myint, Dr Kay Thi Tin, Hsu Wai Yan Lin, Min Khant Thu, Naing Zaw Lu, Dr Saw Win Maung, Chan Myae Kyaw, Kyaw Shin Thant, Kyaw Nyi Thar, Phyoe Min Khant, Dr Aung Kyaw',
+      people: 'U Htin Aung, Daw Myint Myint, Dr Kay Thi Tin, Hsu Wai Yan Lin, Min Khant Thu, Naing Zaw Lu, Dr Saw Win Maung, Chan Myae Zaw, Kyaw Shin Thant, Kyaw Nyi Thar, Phyoe Min Khant, Dr Aung Kyaw',
       leftToRight: true,
     },
     {
