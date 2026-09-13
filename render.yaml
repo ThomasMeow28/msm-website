@@ -6,17 +6,16 @@
 # cookie is not sent on cross-site fetch, so calling this service directly from
 # the Vercel origin would log users straight back out after login.
 
-databases:
-  - name: msm-db
-    plan: free
-    databaseName: msm
-    user: msm
-
 services:
   - type: web
     name: msm-api
     runtime: ruby
     rootDir: server          # Ruby version comes from server/.ruby-version (3.3.5)
+    # Singapore is the closest Render region to Myanmar, and keeps the hop to
+    # Supabase (Southeast Asia) local. Database#with_connection opens a new
+    # connection per request, so a cross-region database would add roughly
+    # half a second of handshake latency to every single API call.
+    region: singapore
     plan: free
     buildCommand: bundle install
     startCommand: bundle exec puma   # reads config/puma.rb; PORT is set by Render
@@ -32,10 +31,12 @@ services:
       - key: SESSION_SECRET
         generateValue: true
 
+      # Postgres is hosted on Supabase, not Render — Render's free database
+      # expires. Paste Supabase's *connection pooler* string (not the direct
+      # endpoint) into the Render dashboard: Database#with_connection opens a
+      # new connection per request, which is what the pooler is built for.
       - key: DATABASE_URL
-        fromDatabase:
-          name: msm-db
-          property: connectionString
+        sync: false
 
       # CLIENT_ORIGIN is deliberately unset: under the Vercel proxy there are
       # no cross-origin requests, so the CORS headers never come into play.
