@@ -40,3 +40,34 @@ Signup collects a name, email, password, and date of birth, then sends a
 six-digit email verification code before the account can be used. Configure
 `SMTP_ADDRESS`, `SMTP_FROM`, and optionally `SMTP_PORT`,
 `SMTP_DOMAIN`, `SMTP_USERNAME`, `SMTP_PASSWORD`, and `SMTP_STARTTLS` in `.env`.
+
+### Deployment: why Vercel proxies `/api`
+
+The API runs on Render; the client runs on Vercel. The client does **not** call
+Render directly. `client/vercel.json` rewrites `/api/*` and `/health` to the
+Render host so the browser only ever sees one origin:
+
+```json
+{ "source": "/api/(.*)", "destination": "https://msm-api.onrender.com/api/$1" }
+```
+
+This is deliberate. The session cookie is `SameSite=Lax`
+(`configuration/security.rb`), and a `Lax` cookie is not sent on cross-site
+`fetch` — only on top-level navigations. If the client called Render directly,
+`POST /api/login` would return 200 and set the cookie, and then the very next
+`GET /api/session` would arrive without it and answer
+`{"authenticated": false}`. Users would appear to log in and be logged straight
+back out, with nothing in any log to explain it. CORS is not the issue; it is
+already configured correctly.
+
+`VITE_API_URL` is therefore left unset in production, so
+`import.meta.env.VITE_API_URL || ''` resolves to a relative path. This mirrors
+local development, where the Vite dev server proxies the same two paths.
+
+**If you remove those rewrites**, you must also change `same_site` to `:none` in
+`configuration/security.rb` and set `CLIENT_ORIGIN` — and you inherit the
+third-party-cookie restrictions in Safari and Brave that motivated the proxy.
+
+The cleaner long-term fix is a shared parent domain (e.g. `api.example.org` and
+`www.example.org`), which makes the requests same-site and lets the proxy go
+away honestly.

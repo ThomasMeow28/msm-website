@@ -9,8 +9,11 @@ GEM
       timeout
     net-smtp (0.5.1)
       net-protocol
+    nio4r (2.7.5)
     ostruct (0.6.3)
     pg (1.5.9)
+    puma (6.6.1)
+      nio4r (~> 2.0)
     rack (2.2.24)
     rack-protection (2.2.4)
       rack
@@ -36,6 +39,7 @@ DEPENDENCIES
   net-smtp
   ostruct
   pg (~> 1.5)
+  puma (~> 6.4)
   rackup (~> 1.0)
   sinatra (~> 2.2)
 

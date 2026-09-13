@@ -1,0 +1,57 @@
+# Render blueprint for the MSM API.
+#
+# The client is NOT deployed here — it lives on Vercel, which proxies /api and
+# /health to this service (see client/vercel.json) so the browser only ever sees
+# one origin. That is deliberate: the session cookie is SameSite=Lax, and a Lax
+# cookie is not sent on cross-site fetch, so calling this service directly from
+# the Vercel origin would log users straight back out after login.
+
+databases:
+  - name: msm-db
+    plan: free
+    databaseName: msm
+    user: msm
+
+services:
+  - type: web
+    name: msm-api
+    runtime: ruby
+    rootDir: server          # Ruby version comes from server/.ruby-version (3.3.5)
+    plan: free
+    buildCommand: bundle install
+    startCommand: bundle exec puma   # reads config/puma.rb; PORT is set by Render
+    healthCheckPath: /health
+    envVars:
+      - key: RACK_ENV
+        value: production
+
+      # Generated once by Render and then held stable. Do NOT rotate it: it
+      # signs session cookies AND peppers the six-digit code digests in
+      # AccountService#digest, so changing it bricks any account that has
+      # signed up but not yet verified.
+      - key: SESSION_SECRET
+        generateValue: true
+
+      - key: DATABASE_URL
+        fromDatabase:
+          name: msm-db
+          property: connectionString
+
+      # CLIENT_ORIGIN is deliberately unset: under the Vercel proxy there are
+      # no cross-origin requests, so the CORS headers never come into play.
+
+      # Secrets — set these in the Render dashboard, never in this file.
+      - key: SMTP_ADDRESS
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_DOMAIN
+        sync: false
+      - key: SMTP_USERNAME
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: SMTP_FROM
+        sync: false
+      - key: SMTP_STARTTLS
+        sync: false
