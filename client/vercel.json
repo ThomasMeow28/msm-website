@@ -1,8 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "https://msm-api.onrender.com/api/$1" },
-    { "source": "/health", "destination": "https://msm-api.onrender.com/health" },
+    { "source": "/api/(.*)", "destination": "https://msm-api-jw9d.onrender.com/api/$1" },
+    { "source": "/health", "destination": "https://msm-api-jw9d.onrender.com/health" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

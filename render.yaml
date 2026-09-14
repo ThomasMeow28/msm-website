@@ -8,14 +8,10 @@
 
 services:
   - type: web
-    name: msm-api
+    name: msm-api   # NB: this is the API, despite the name
     runtime: ruby
     rootDir: server          # Ruby version comes from server/.ruby-version (3.3.5)
-    # Singapore is the closest Render region to Myanmar, and keeps the hop to
-    # Supabase (Southeast Asia) local. Database#with_connection opens a new
-    # connection per request, so a cross-region database would add roughly
-    # half a second of handshake latency to every single API call.
-    region: singapore
+    region: oregon
     plan: free
     buildCommand: bundle install
     startCommand: bundle exec puma   # reads config/puma.rb; PORT is set by Render
