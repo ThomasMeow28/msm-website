@@ -8,7 +8,10 @@
 
 services:
   - type: web
-    name: msm-api   # NB: this is the API, despite the name
+    name: msm-api
+    # Render appended a suffix because the bare subdomain was taken, so the
+    # public URL is https://msm-api-jw9d.onrender.com — that is what
+    # client/vercel.json must point at, not msm-api.onrender.com.
     runtime: ruby
     rootDir: server          # Ruby version comes from server/.ruby-version (3.3.5)
     region: oregon

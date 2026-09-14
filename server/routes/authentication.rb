@@ -23,7 +23,7 @@ module Routes
       rescue KeyError => error
         return json_response({ error: "email_unavailable", message: "Email delivery is not configured" }, 503) if error.key.to_s.start_with?("SMTP_")
         json_response({ error: "invalid_json", message: "Request body must include name, email, password, and dateOfBirth" }, 400)
-      rescue Net::SMTPError, SocketError => error
+      rescue Net::SMTPError, SocketError, Timeout::Error => error
         warn "SMTP delivery failed (#{error.class}): #{error.message}"
         json_response({ error: "email_unavailable", message: "Unable to send the verification email" }, 503)
       rescue PG::Error
@@ -61,9 +61,12 @@ module Routes
         email = request_json.fetch("email", "").strip.downcase
         settings.accounts.request_login_code(email: email)
         json_response({ message: "If that email belongs to a verified account, a login code has been sent" })
-      rescue JSON::ParserError, KeyError
+      rescue JSON::ParserError
         json_response({ error: "invalid_json", message: "Request body must include email" }, 400)
-      rescue Net::SMTPError, SocketError => error
+      rescue KeyError => error
+        return json_response({ error: "email_unavailable", message: "Email delivery is not configured" }, 503) if error.key.to_s.start_with?("SMTP_")
+        json_response({ error: "invalid_json", message: "Request body must include email" }, 400)
+      rescue Net::SMTPError, SocketError, Timeout::Error => error
         warn "SMTP delivery failed (#{error.class}): #{error.message}"
         json_response({ error: "email_unavailable", message: "Unable to send the login code" }, 503)
       rescue PG::Error
