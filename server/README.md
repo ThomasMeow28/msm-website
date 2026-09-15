@@ -1,8 +1,11 @@
 
 ## MSM API
 
-The API is a small Sinatra service backed by PostgreSQL. It currently exposes
-`GET /health` and `POST /api/signup`.
+The API is a small Sinatra service backed by PostgreSQL. It exposes
+`GET /health`, `POST /api/signup`, and same-origin resource downloads at
+`GET /api/resources/:slug`. Resource origins stay in the server's resource
+registry; the download route returns the upstream file bytes and never
+redirects the browser to the storage provider.
 
 ### Local setup
 
