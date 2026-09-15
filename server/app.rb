@@ -10,6 +10,7 @@ require_relative "helpers/http_helpers"
 require_relative "configuration"
 require_relative "routes/health"
 require_relative "routes/authentication"
+require_relative "routes/resources"
 
 class MsmApi < Sinatra::Base
   configure do
@@ -30,4 +31,5 @@ class MsmApi < Sinatra::Base
 
   register Routes::Health
   register Routes::Authentication
+  register Routes::Resources
 end
