@@ -1,49 +1,111 @@
+require "json"
 require "net/http"
+require "stringio"
 require "uri"
+require "googleauth"
 
 class ResourceProxy
-  RESOURCE_IDS = {
-    "grade-9-papers" => ["1F_c1f2paVaNRZCiCEWNKibk2CdRboM5_", "grade-9-papers.pdf"],
-    "grade-10-papers" => ["1LiMU5ybP_5IeCTVBzX73xIwhiguPCjmS", "grade-10-papers.pdf"],
-    "grade-11-papers" => ["1_OFltQsF0ebfVm8n5UmNF_AynOXN5N_b", "grade-11-papers.pdf"],
-    "momc-junior-1" => ["1Nlf2-27Bp-2iOZ1Un0a4a-UlehaNt_y-", "momc-junior-1.pdf"],
-    "momc-junior-2" => ["1XWZQ3Om7xa-os0jBfkwvTIl2pdKhKKvv", "momc-junior-2.pdf"],
-    "momc-senior-1" => ["1_og7GUMj74rmaWJ8y75BoF7fg1mfnK1F", "momc-senior-1.pdf"],
-    "momc-senior-2" => ["1GTFXlX8ir2XZak0jxxYyrB34GPL76A38", "momc-senior-2.pdf"],
-    "team-selection-tests" => ["1mRhZIj1YBJYZ0ucMQwtVZ-RuiKM6fAFl", "team-selection-tests.pdf"],
-    "momc-junior-i-booklet" => ["1hy-PV0pMyB7ceV24WVukva_oVN56R211", "momc-junior-i-booklet.pdf"],
-    "momc-junior-ii-booklet" => ["1P0cps9YRuk3JVxoqF-MQOXGaWsahZkMS", "momc-junior-ii-booklet.pdf"],
-    "mmo-questions-solutions" => ["10lxibT9xn3kXsE38YVC_HDpkXUlTm-rn", "mmo-questions-solutions.pdf"],
-  }.freeze
+  DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.readonly".freeze
 
-  MAX_REDIRECTS = 3
-  ALLOWED_HOST = /\A(?:drive\.google\.com|drive\.usercontent\.google\.com|.+\.googleusercontent\.com)\z/
+  def self.list_files
+    id = ENV["GOOGLE_DRIVE_RESOURCES_FOLDER_ID"].to_s.strip
+    raise "GOOGLE_DRIVE_RESOURCES_FOLDER_ID is required" if id.empty?
 
-  def self.fetch(slug)
-    file_id, filename = RESOURCE_IDS.fetch(slug)
-    response = fetch_response(URI("https://drive.google.com/uc?export=download&id=#{file_id}"), MAX_REDIRECTS)
-    raise "resource upstream returned #{response.code}" unless response.is_a?(Net::HTTPSuccess)
+    uri = URI("https://www.googleapis.com/drive/v3/files")
+    uri.query = URI.encode_www_form(
+      q: "'#{id}' in parents and trashed = false and mimeType != 'application/vnd.google-apps.folder'",
+      orderBy: "name",
+      includeItemsFromAllDrives: "true",
+      supportsAllDrives: "true",
+      fields: "files(id,name,mimeType,size,modifiedTime,webViewLink)",
+    )
+
+    response = drive_request(uri)
+    raise "Google Drive API returned #{response.code}" unless response.is_a?(Net::HTTPSuccess)
+
+    JSON.parse(response.body).fetch("files", []).map do |file|
+      {
+        id: file["id"],
+        name: file["name"],
+        mimeType: file["mimeType"],
+        size: file["size"].to_i,
+        modifiedTime: file["modifiedTime"],
+        webViewLink: file["webViewLink"],
+      }
+    end
+  end
+
+  def self.fetch(file_id)
+    metadata = file_metadata(file_id)
+    response = drive_media_response(file_id)
+    raise "Google Drive API returned #{response.code}" unless response.is_a?(Net::HTTPSuccess)
 
     {
       body: response.body,
       content_type: response["content-type"]&.split(";")&.first || "application/octet-stream",
-      filename: filename,
+      filename: sanitize_filename(metadata["name"] || file_id),
     }
-  rescue KeyError
-    nil
   end
 
-  def self.fetch_response(uri, redirects_left)
-    raise "resource redirect limit exceeded" if redirects_left.zero?
-    raise "resource redirect host rejected" unless uri.host.match?(ALLOWED_HOST)
+  def self.google_service_account_json
+    json = ENV["GOOGLE_SERVICE_ACCOUNT_JSON"].to_s.strip
+    return JSON.parse(json) unless json.empty?
 
-    response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https", open_timeout: 10, read_timeout: 60) do |http|
-      http.request(Net::HTTP::Get.new(uri))
-    end
-    return fetch_response(URI(response["location"]), redirects_left - 1) if response.is_a?(Net::HTTPRedirection)
+    path = ENV["GOOGLE_SERVICE_ACCOUNT_KEY_PATH"].to_s.strip
+    raise "GOOGLE_SERVICE_ACCOUNT_JSON or GOOGLE_SERVICE_ACCOUNT_KEY_PATH is required" if path.empty?
 
-    response
+    JSON.parse(File.read(path))
   end
 
-  private_class_method :fetch_response
+  def self.google_access_token
+    credentials = Google::Auth::ServiceAccountCredentials.make_creds(
+      json_key_io: StringIO.new(JSON.generate(google_service_account_json)),
+      scope: DRIVE_SCOPE,
+    )
+    credentials.fetch_access_token!
+    credentials.access_token
+  end
+
+  def self.file_metadata(file_id)
+    uri = URI("https://www.googleapis.com/drive/v3/files/#{file_id}")
+    uri.query = URI.encode_www_form(
+      fields: "name,mimeType",
+      supportsAllDrives: "true",
+    )
+
+    response = drive_request(uri)
+    raise "Google Drive API returned #{response.code}" unless response.is_a?(Net::HTTPSuccess)
+
+    JSON.parse(response.body)
+  end
+
+  def self.drive_media_response(file_id)
+    uri = URI("https://www.googleapis.com/drive/v3/files/#{file_id}?alt=media&supportsAllDrives=true")
+    request = Net::HTTP::Get.new(uri)
+    request["Authorization"] = "Bearer #{google_access_token}"
+
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    http.open_timeout = 10
+    http.read_timeout = 60
+    http.request(request)
+  end
+
+  def self.drive_request(uri)
+    request = Net::HTTP::Get.new(uri)
+    request["Authorization"] = "Bearer #{google_access_token}"
+
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    http.open_timeout = 10
+    http.read_timeout = 60
+    http.request(request)
+  end
+
+  def self.sanitize_filename(name)
+    cleaned = name.to_s.gsub(/[\\\/:*?"<>|\r\n]+/, " ").strip
+    cleaned.empty? ? "download" : cleaned
+  end
+
+  private_class_method :google_service_account_json, :google_access_token, :drive_media_response, :drive_request, :file_metadata, :sanitize_filename
 end

@@ -387,34 +387,10 @@ const committees = [
        */
       resources: {
         title: 'Resources',
-        groups: [
-          {
-            title: 'Past papers',
-            folder: null,
-            items: [
-              { name: 'Grade 9, 2015–2019', href: '/api/resources/grade-9-papers', meta: 'PDF · 2.4 MB' },
-              { name: 'Grade 10, 2015–2019', href: '/api/resources/grade-10-papers', meta: 'PDF · 2.3 MB' },
-              { name: 'Grade 11, 2015–2019', href: '/api/resources/grade-11-papers', meta: 'PDF · 2.5 MB' },
-              { name: 'MOMC Junior 1, 2019', href: '/api/resources/momc-junior-1', meta: 'PDF · 0.8 MB' },
-              { name: 'MOMC Junior 2, 2023–2024', href: '/api/resources/momc-junior-2', meta: 'PDF · 2.3 MB' },
-              { name: 'MOMC Senior 1, 2024', href: '/api/resources/momc-senior-1', meta: 'PDF · 0.8 MB' },
-              { name: 'MOMC Senior 2, 2023–2024', href: '/api/resources/momc-senior-2', meta: 'PDF · 1.4 MB' },
-              { name: 'Team selection tests, 2017–2020 and 2023–2025', href: '/api/resources/team-selection-tests', meta: 'PDF · 2.0 MB' },
-            ],
-          },
-          {
-            title: 'Books & notes',
-            folder: null,
-            items: [
-              { name: 'MOMC Junior I booklet — Shine Maw Arnt', href: '/api/resources/momc-junior-i-booklet', meta: 'PDF · 0.4 MB' },
-              { name: 'MOMC Junior II booklet — Shine Maw Arnt', href: '/api/resources/momc-junior-ii-booklet', meta: 'PDF · 1.6 MB' },
-              { name: 'MMO questions and solutions, 2016–2020 — Kyaw Shin Thant', href: '/api/resources/mmo-questions-solutions', meta: 'PDF · 1.2 MB' },
-            ],
-          },
-          {
-            title: 'Videos',
-            folder: null,
-            items: [
+        dynamic: true,
+        groups: [],
+      },
+      videos: [
           {
             name: '2026 February — PreTST preparation training',
             href: 'https://www.youtube.com/playlist?list=PL7gQVqp8MY3pHHhiVuOTF3C23fqrdVvLK',
@@ -538,10 +514,7 @@ const committees = [
               { name: 'Combinatorics 101', href: 'https://www.youtube.com/watch?v=urJAJbDMCx4', meta: '1:48:49' },
             ],
           },
-            ],
-          },
-        ],
-      },
+      ],
       responsibilities: [
         'Running the residential and online training camps',
         'Teaching algebra, combinatorics, geometry and number theory at olympiad level',

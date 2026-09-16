@@ -7,6 +7,11 @@ The API is a small Sinatra service backed by PostgreSQL. It exposes
 registry; the download route returns the upstream file bytes and never
 redirects the browser to the storage provider.
 
+For file downloads, configure a Google service account and point
+`GOOGLE_SERVICE_ACCOUNT_JSON` or `GOOGLE_SERVICE_ACCOUNT_KEY_PATH` at the
+JSON credentials. The server exchanges that credential for a Drive API access
+token and streams the file bytes from `https://www.googleapis.com/drive/v3/...`.
+
 ### Local setup
 
 1. Create a PostgreSQL database, for example:
