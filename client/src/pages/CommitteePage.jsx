@@ -1,4 +1,5 @@
 import { Navigate, Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 import Container from '../components/Container'
 import PageHeader from '../components/PageHeader'
 import StudyGuide from '../components/StudyGuide'
@@ -11,6 +12,8 @@ import { fill, useContent } from '../i18n'
 export default function CommitteePage({ slug }) {
   const { committees, committeePage, ui } = useContent()
   const committee = committees.find((c) => c.slug === slug)
+  const [resources, setResources] = useState([])
+  const [resourcesLoading, setResourcesLoading] = useState(Boolean(committee?.page?.resources?.dynamic))
 
   if (!committee) return <Navigate to="/" replace />
 
@@ -18,6 +21,54 @@ export default function CommitteePage({ slug }) {
   const other = committees.find((c) => c.slug !== slug)
   const { page } = committee
   const vars = { acronym: committee.acronym }
+  const dynamicResources = Boolean(page.resources?.dynamic)
+
+  useEffect(() => {
+    if (!dynamicResources) return
+
+    let cancelled = false
+
+    const loadResources = async () => {
+      setResourcesLoading(true)
+      try {
+        const response = await fetch('/api/resources')
+        if (!response.ok) throw new Error('Unable to load resources')
+
+        const payload = await response.json()
+        if (!cancelled) {
+          setResources(Array.isArray(payload.items) ? payload.items : [])
+        }
+      } catch (error) {
+        if (!cancelled) setResources([])
+      } finally {
+        if (!cancelled) setResourcesLoading(false)
+      }
+    }
+
+    loadResources()
+    return () => {
+      cancelled = true
+    }
+  }, [dynamicResources])
+
+  const formatResourceMeta = (item) => {
+    const type = item.mimeType?.includes('pdf') ? 'PDF' : (item.mimeType || 'FILE').split('/').pop()?.toUpperCase() || 'FILE'
+    const size = Number(item.size || 0)
+
+    if (!size) return type
+    if (size >= 1024 * 1024) return `${type} · ${(size / (1024 * 1024)).toFixed(1)} MB`
+    if (size >= 1024) return `${type} · ${(size / 1024).toFixed(1)} KB`
+    return `${type} · ${size} B`
+  }
+
+  const resourceItems = dynamicResources
+    ? resources.map((item) => ({
+        name: item.name,
+        href: `/api/resources/download/${item.id}`,
+        meta: formatResourceMeta(item),
+      }))
+    : page.resources?.groups?.flatMap((group) => group.items) ?? []
+
   // A committee opts out of either half of the side column by omitting its key.
   const hasPhoto = Boolean(page.imageCaption)
   const hasResponsibilities = Boolean(page.responsibilities)
@@ -119,82 +170,106 @@ export default function CommitteePage({ slug }) {
                 </span>
               </summary>
               <div className="mt-10 space-y-14">
-              {page.resources.groups.map((group) => (
-                <div key={group.title}>
-                  <div className="flex flex-wrap items-baseline justify-between gap-4">
-                    <h3 className="display-sm text-2xl text-msm-ink">{group.title}</h3>
-                    {group.folder && (
-                      <a
-                        href={group.folder.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-cond text-sm font-semibold uppercase tracking-[0.14em] text-msm-blue-600 underline underline-offset-4 transition-colors hover:text-msm-ink"
-                      >
-                        {group.folder.label} <span aria-hidden="true">↗</span>
-                        <span className="sr-only">{ui.opensInNewTab}</span>
-                      </a>
+                {dynamicResources ? (
+                  <div>
+                    {resourcesLoading ? (
+                      <p className="text-sm text-msm-slate">Loading resources…</p>
+                    ) : (
+                      <ul className="mt-5 border-t border-msm-line">
+                        {resourceItems.map((item) => (
+                          <li key={item.name} className="border-b border-msm-line">
+                            <a
+                              href={item.href}
+                              className="group flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-4 transition-colors hover:text-msm-blue-600"
+                            >
+                              <span className="text-msm-ink underline-offset-4 group-hover:text-msm-blue-600 group-hover:underline">
+                                {item.name}
+                              </span>
+                              <span className="shrink-0 font-cond text-xs font-semibold uppercase tracking-[0.14em] text-msm-slate">
+                                {item.meta}
+                              </span>
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
                     )}
                   </div>
-
-                  <ul className="mt-5 border-t border-msm-line">
-                    {group.items.map((item) => (
-                      <li key={item.name} className="border-b border-msm-line">
-                        <a
-                          href={item.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-4 transition-colors hover:text-msm-blue-600"
-                        >
-                          <span className="text-msm-ink underline-offset-4 group-hover:text-msm-blue-600 group-hover:underline">
-                            {item.name}
-                          </span>
-                          <span className="shrink-0 font-cond text-xs font-semibold uppercase tracking-[0.14em] text-msm-slate">
-                            {item.meta} <span aria-hidden="true">↗</span>
+                ) : (
+                  page.resources.groups.map((group) => (
+                    <div key={group.title}>
+                      <div className="flex flex-wrap items-baseline justify-between gap-4">
+                        <h3 className="display-sm text-2xl text-msm-ink">{group.title}</h3>
+                        {group.folder && (
+                          <a
+                            href={group.folder.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-cond text-sm font-semibold uppercase tracking-[0.14em] text-msm-blue-600 underline underline-offset-4 transition-colors hover:text-msm-ink"
+                          >
+                            {group.folder.label} <span aria-hidden="true">↗</span>
                             <span className="sr-only">{ui.opensInNewTab}</span>
-                          </span>
-                        </a>
-
-                        {/* The toggle is a sibling of the title link, never inside it —
-                            an <a> nested in a <summary> would fire both at once. */}
-                        {item.videos && (
-                          <details className="group/d pb-4">
-                            <summary className="flex cursor-pointer list-none items-center gap-2 font-cond text-xs font-semibold uppercase tracking-[0.14em] text-msm-blue-600 [&::-webkit-details-marker]:hidden">
-                              <span
-                                aria-hidden="true"
-                                className="inline-block transition-transform group-open/d:rotate-90"
-                              >
-                                ▸
-                              </span>
-                              {item.videos.length === 1
-                                ? committeePage.showVideosOne
-                                : fill(committeePage.showVideos, { count: item.videos.length })}
-                            </summary>
-
-                            <ol className="mt-3 space-y-px border-l-2 border-msm-line pl-4">
-                              {item.videos.map((video) => (
-                                <li key={video.href}>
-                                  <a
-                                    href={video.href}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5 py-1.5 text-sm text-msm-slate underline-offset-4 transition-colors hover:text-msm-blue-600 hover:underline"
-                                  >
-                                    <span>{video.name}</span>
-                                    <span className="shrink-0 font-cond text-xs tracking-[0.1em] text-msm-slate/70">
-                                      {video.meta}
-                                      <span className="sr-only">{ui.opensInNewTab}</span>
-                                    </span>
-                                  </a>
-                                </li>
-                              ))}
-                            </ol>
-                          </details>
+                          </a>
                         )}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
+                      </div>
+
+                      <ul className="mt-5 border-t border-msm-line">
+                        {group.items.map((item) => (
+                          <li key={item.name} className="border-b border-msm-line">
+                            <a
+                              href={item.href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="group flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-4 transition-colors hover:text-msm-blue-600"
+                            >
+                              <span className="text-msm-ink underline-offset-4 group-hover:text-msm-blue-600 group-hover:underline">
+                                {item.name}
+                              </span>
+                              <span className="shrink-0 font-cond text-xs font-semibold uppercase tracking-[0.14em] text-msm-slate">
+                                {item.meta} <span aria-hidden="true">↗</span>
+                                <span className="sr-only">{ui.opensInNewTab}</span>
+                              </span>
+                            </a>
+
+                            {item.videos && (
+                              <details className="group/d pb-4">
+                                <summary className="flex cursor-pointer list-none items-center gap-2 font-cond text-xs font-semibold uppercase tracking-[0.14em] text-msm-blue-600 [&::-webkit-details-marker]:hidden">
+                                  <span
+                                    aria-hidden="true"
+                                    className="inline-block transition-transform group-open/d:rotate-90"
+                                  >
+                                    ▸
+                                  </span>
+                                  {item.videos.length === 1
+                                    ? committeePage.showVideosOne
+                                    : fill(committeePage.showVideos, { count: item.videos.length })}
+                                </summary>
+
+                                <ol className="mt-3 space-y-px border-l-2 border-msm-line pl-4">
+                                  {item.videos.map((video) => (
+                                    <li key={video.href}>
+                                      <a
+                                        href={video.href}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5 py-1.5 text-sm text-msm-slate underline-offset-4 transition-colors hover:text-msm-blue-600 hover:underline"
+                                      >
+                                        <span>{video.name}</span>
+                                        <span className="shrink-0 font-cond text-xs tracking-[0.1em] text-msm-slate/70">
+                                          {video.meta}
+                                          <span className="sr-only">{ui.opensInNewTab}</span>
+                                        </span>
+                                      </a>
+                                    </li>
+                                  ))}
+                                </ol>
+                              </details>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))
+                )}
               </div>
             </details>
           </Container>
